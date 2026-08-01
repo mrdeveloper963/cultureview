@@ -1,0 +1,55 @@
+{
+  "common": {
+    "loading": "در حال بارگذاری...",
+    "error": "خطا",
+    "submit": "ثبت",
+    "cancel": "لغو",
+    "delete": "حذف",
+    "edit": "ویرایش",
+    "save": "ذخیره",
+    "search": "جستجو",
+    "filters": "فیلترها"
+  },
+  "nav": {
+    "home": "خانه",
+    "countries": "کشورها",
+    "profile": "پروفایل",
+    "login": "ورود",
+    "signup": "ثبت‌نام",
+    "logout": "خروج"
+  },
+  "countries": {
+    "title": "کاوش کشورها",
+    "totalOpinions": "{{count}} نظر",
+    "viewDetails": "مشاهده جزئیات"
+  },
+  "categories": {
+    "work_culture": "فرهنگ کار",
+    "food_culture": "فرهنگ غذا",
+    "family_culture": "فرهنگ خانواده",
+    "etiquette": "آداب معاشرت",
+    "punctuality": "وقت‌شناسی",
+    "hospitality": "مهمان‌نوازی",
+    "driving_culture": "فرهنگ رانندگی",
+    "attitude_strangers": "رفتار با غریبه‌ها",
+    "dress_culture": "فرهنگ پوشش"
+  },
+  "posts": {
+    "shareOpinion": "نظر خود را به اشتراک بگذارید",
+    "selectCountry": "انتخاب کشور",
+    "selectCategory": "انتخاب دسته‌بندی",
+    "selectExperience": "تجربه شما",
+    "title": "عنوان (اختیاری)",
+    "content": "تجربه خود را به اشتراک بگذارید",
+    "experiences": {
+      "native": "من اهل این کشور هستم",
+      "lived": "در آنجا زندگی/کار کرده‌ام",
+      "traveled": "به آنجا سفر کرده‌ام",
+      "heard": "فقط شنیده‌ام"
+    },
+    "like": "موافقم",
+    "dislike": "مخالفم",
+    "comments": "نظرات",
+    "report": "گزارش"
+  }
+}

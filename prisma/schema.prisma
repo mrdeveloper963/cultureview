@@ -1,0 +1,175 @@
+// CultureView Database Schema
+// Prisma schema for PostgreSQL database
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User model
+model User {
+  id             String   @id @default(uuid())
+  email          String   @unique
+  username       String   @unique
+  passwordHash   String?  @map("password_hash")
+  avatarUrl      String?  @map("avatar_url")
+  homeCountryId  Int?     @map("home_country_id")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  homeCountry    Country?        @relation("UserHomeCountry", fields: [homeCountryId], references: [id])
+  posts          Post[]
+  comments       Comment[]
+  votes          Vote[]
+  userCountries  UserCountry[]
+  reports        Report[]
+
+  @@map("users")
+}
+
+// Country model
+model Country {
+  id          Int      @id @default(autoincrement())
+  nameEn      String   @map("name_en")
+  nameFa      String?  @map("name_fa")
+  code        String   @unique
+  flagUrl     String?  @map("flag_url")
+  totalPosts  Int      @default(0) @map("total_posts")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  posts         Post[]
+  users         User[]          @relation("UserHomeCountry")
+  userCountries UserCountry[]
+
+  @@map("countries")
+}
+
+// Category model (predefined cultural categories)
+model Category {
+  id            Int      @id @default(autoincrement())
+  slug          String   @unique
+  nameEn        String   @map("name_en")
+  nameFa        String?  @map("name_fa")
+  descriptionEn String?  @map("description_en")
+  descriptionFa String?  @map("description_fa")
+  icon          String?
+  displayOrder  Int      @default(0) @map("display_order")
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  posts Post[]
+
+  @@map("categories")
+}
+
+// Post/Opinion model
+model Post {
+  id              String   @id @default(uuid())
+  userId          String   @map("user_id")
+  countryId       Int      @map("country_id")
+  categoryId      Int      @map("category_id")
+  title           String?
+  content         String
+  experienceType  String   @map("experience_type")
+  likesCount      Int      @default(0) @map("likes_count")
+  dislikesCount   Int      @default(0) @map("dislikes_count")
+  commentsCount   Int      @default(0) @map("comments_count")
+  isPublished     Boolean  @default(true) @map("is_published")
+  isReported      Boolean  @default(false) @map("is_reported")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  country  Country   @relation(fields: [countryId], references: [id])
+  category Category  @relation(fields: [categoryId], references: [id])
+  comments Comment[]
+  votes    Vote[]
+  reports  Report[]
+
+  @@index([countryId, categoryId])
+  @@index([userId])
+  @@index([createdAt(sort: Desc)])
+  @@map("posts")
+}
+
+// Comment model
+model Comment {
+  id              String   @id @default(uuid())
+  postId          String   @map("post_id")
+  userId          String   @map("user_id")
+  parentCommentId String?  @map("parent_comment_id")
+  content         String
+  likesCount      Int      @default(0) @map("likes_count")
+  dislikesCount   Int      @default(0) @map("dislikes_count")
+  isReported      Boolean  @default(false) @map("is_reported")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  post          Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  parentComment Comment?  @relation("CommentReplies", fields: [parentCommentId], references: [id], onDelete: Cascade)
+  replies       Comment[] @relation("CommentReplies")
+  votes         Vote[]
+  reports       Report[]
+
+  @@index([postId])
+  @@index([parentCommentId])
+  @@map("comments")
+}
+
+// Vote model (for both posts and comments)
+model Vote {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  postId    String?  @map("post_id")
+  commentId String?  @map("comment_id")
+  voteType  String   @map("vote_type")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post    Post?    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  comment Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, postId])
+  @@unique([userId, commentId])
+  @@index([userId, postId])
+  @@index([userId, commentId])
+  @@map("votes")
+}
+
+// UserCountry model (countries user has experience with)
+model UserCountry {
+  id             Int      @id @default(autoincrement())
+  userId         String   @map("user_id")
+  countryId      Int      @map("country_id")
+  experienceType String   @map("experience_type")
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  country Country @relation(fields: [countryId], references: [id])
+
+  @@unique([userId, countryId])
+  @@map("user_countries")
+}
+
+// Report model (for content moderation)
+model Report {
+  id          String    @id @default(uuid())
+  reporterId  String    @map("reporter_user_id")
+  postId      String?   @map("post_id")
+  commentId   String?   @map("comment_id")
+  reason      String
+  description String?
+  status      String    @default("pending")
+  reviewedBy  String?   @map("reviewed_by")
+  reviewedAt  DateTime? @map("reviewed_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  reporter User     @relation(fields: [reporterId], references: [id])
+  post     Post?    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  comment  Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  @@map("reports")
+}

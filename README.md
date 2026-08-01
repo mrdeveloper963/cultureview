@@ -1,36 +1,115 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CultureView
+
+A community-driven platform where users share authentic cultural experiences and insights about different countries.
+
+## Tech Stack
+
+- **Framework:** Next.js 14+ (App Router)
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS + shadcn/ui
+- **Database:** PostgreSQL (Supabase)
+- **ORM:** Prisma
+- **Authentication:** Supabase Auth
+
+## Project Structure
+
+```
+cultureview/
+├── prisma/              # Database schema and migrations
+├── src/
+│   ├── app/            # Next.js app router pages
+│   ├── components/     # React components
+│   │   ├── ui/         # shadcn/ui components
+│   │   ├── layout/     # Layout components
+│   │   ├── country/    # Country-specific components
+│   │   ├── post/       # Post/opinion components
+│   │   ├── comment/    # Comment components
+│   │   └── common/     # Shared components
+│   ├── lib/            # Utilities and configurations
+│   │   ├── db/         # Database client
+│   │   ├── auth/       # Authentication config
+│   │   ├── utils/      # Helper functions
+│   │   ├── hooks/      # Custom React hooks
+│   │   └── api/        # API client functions
+│   ├── types/          # TypeScript type definitions
+│   └── i18n/           # Internationalization (EN/FA)
+└── public/             # Static assets
+```
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
+- Node.js 18+ 
+- PostgreSQL database (or Supabase account)
+- npm or yarn
+
+### Installation
+
+1. Clone the repository
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <repository-url>
+cd cultureview
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install dependencies
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Set up environment variables
+```bash
+cp .env.example .env
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Edit `.env` and add your database connection string and other required variables.
 
-## Learn More
+4. Set up the database
+```bash
+# Generate Prisma client
+npx prisma generate
 
-To learn more about Next.js, take a look at the following resources:
+# Run migrations
+npx prisma migrate dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+5. Seed the database (optional)
+```bash
+npx prisma db seed
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+6. Run the development server
+```bash
+npm run dev
+```
 
-## Deploy on Vercel
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Available Scripts
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm start` - Start production server
+- `npm run lint` - Run ESLint
+- `npm run format` - Format code with Prettier
+- `npx prisma studio` - Open Prisma Studio (database GUI)
+- `npx prisma migrate dev` - Create and apply migrations
+
+## Features
+
+- 🌍 Browse cultural insights from different countries
+- 📝 Share personal experiences in predefined cultural categories
+- 👍👎 Like/dislike voting system
+- 💬 Comment and discuss opinions
+- 🔍 Search and filter by country, category, experience type
+- 🌐 Multilingual (English/Persian)
+- 📱 Responsive design
+- 🔐 User authentication and profiles
+
+## Development Roadmap
+
+See [docs/Features.md](../docs/Features.md) for detailed feature specifications and roadmap.
+
+## License
+
+MIT

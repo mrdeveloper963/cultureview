@@ -1,0 +1,55 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "save": "Save",
+    "search": "Search",
+    "filters": "Filters"
+  },
+  "nav": {
+    "home": "Home",
+    "countries": "Countries",
+    "profile": "Profile",
+    "login": "Login",
+    "signup": "Sign Up",
+    "logout": "Logout"
+  },
+  "countries": {
+    "title": "Explore Countries",
+    "totalOpinions": "{{count}} opinions",
+    "viewDetails": "View Details"
+  },
+  "categories": {
+    "work_culture": "Work Culture",
+    "food_culture": "Food Culture",
+    "family_culture": "Family Culture",
+    "etiquette": "Etiquette",
+    "punctuality": "Punctuality",
+    "hospitality": "Hospitality",
+    "driving_culture": "Driving Culture",
+    "attitude_strangers": "Attitude to Strangers",
+    "dress_culture": "Dress Culture"
+  },
+  "posts": {
+    "shareOpinion": "Share Your Opinion",
+    "selectCountry": "Select Country",
+    "selectCategory": "Select Category",
+    "selectExperience": "Your Experience",
+    "title": "Title (optional)",
+    "content": "Share your experience",
+    "experiences": {
+      "native": "I'm from this country",
+      "lived": "I've lived/worked there",
+      "traveled": "I've traveled there",
+      "heard": "Just heard about it"
+    },
+    "like": "Agree",
+    "dislike": "Disagree",
+    "comments": "Comments",
+    "report": "Report"
+  }
+}
