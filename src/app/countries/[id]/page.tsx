@@ -58,12 +58,12 @@ export default async function CountryPage({ params }: { params: Promise<{ id: st
     <div className="container mx-auto px-4 py-8">
       {/* Back Button */}
       <div className="mb-6">
-        <Button variant="ghost" size="sm" asChild>
-          <Link href="/" className="gap-2">
+        <Link href="/">
+          <Button variant="ghost" size="sm" className="gap-2">
             <ArrowLeft className="h-4 w-4" />
             Back to Countries
-          </Link>
-        </Button>
+          </Button>
+        </Link>
       </div>
 
       {/* Country Header */}
@@ -116,16 +116,12 @@ export default async function CountryPage({ params }: { params: Promise<{ id: st
 
         {/* Action Buttons */}
         <div className="flex gap-3">
-          <Button size="lg" asChild>
-            <Link href={`/posts/new?country=${country.id}`}>
-              Share Your Experience
-            </Link>
-          </Button>
-          <Button variant="outline" size="lg" asChild>
-            <Link href={`/countries/${country.id}/all`}>
-              View All Opinions
-            </Link>
-          </Button>
+          <Link href={`/posts/new?country=${country.id}`}>
+            <Button size="lg">Share Your Experience</Button>
+          </Link>
+          <Link href={`/countries/${country.id}/all`}>
+            <Button variant="outline" size="lg">View All Opinions</Button>
+          </Link>
         </div>
       </div>
 
@@ -153,11 +149,9 @@ export default async function CountryPage({ params }: { params: Promise<{ id: st
           <p className="text-muted-foreground mb-6">
             Be the first to share your experience about {country.nameEn} culture!
           </p>
-          <Button asChild>
-            <Link href={`/posts/new?country=${country.id}`}>
-              Share Your Experience
-            </Link>
-          </Button>
+          <Link href={`/posts/new?country=${country.id}`}>
+            <Button>Share Your Experience</Button>
+          </Link>
         </div>
       )}
     </div>

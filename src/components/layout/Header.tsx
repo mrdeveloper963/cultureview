@@ -39,12 +39,12 @@ export function Header() {
           <Button variant="ghost" size="icon" className="md:hidden">
             <Search className="h-5 w-5" />
           </Button>
-          <Button variant="outline" size="sm" asChild>
-            <Link href="/auth/login">Login</Link>
-          </Button>
-          <Button size="sm" asChild>
-            <Link href="/auth/signup">Sign Up</Link>
-          </Button>
+          <Link href="/auth/login">
+            <Button variant="outline" size="sm">Login</Button>
+          </Link>
+          <Link href="/auth/signup">
+            <Button size="sm">Sign Up</Button>
+          </Link>
         </div>
       </div>
     </header>
