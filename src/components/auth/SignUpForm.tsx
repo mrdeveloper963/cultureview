@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { createBrowserClient } from '@/lib/supabase/client'
+import { createClient } from '@/lib/supabase/client'
 
 export function SignUpForm() {
   const router = useRouter()
@@ -35,7 +35,7 @@ export function SignUpForm() {
     }
 
     try {
-      const supabase = createBrowserClient()
+      const supabase = createClient()
       const { error } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
@@ -60,7 +60,7 @@ export function SignUpForm() {
   const handleGoogleSignUp = async () => {
     setIsLoading(true)
     try {
-      const supabase = createBrowserClient()
+      const supabase = createClient()
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {

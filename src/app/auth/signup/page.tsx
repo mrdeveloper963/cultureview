@@ -1,11 +1,11 @@
 import { redirect } from 'next/navigation'
-import { createServerClient } from '@/lib/supabase/server'
+import { createClient } from '@/lib/supabase/server'
 import { SignUpForm } from '@/components/auth/SignUpForm'
 import Link from 'next/link'
 import { Globe } from 'lucide-react'
 
 export default async function SignUpPage() {
-  const supabase = await createServerClient()
+  const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
   if (user) {

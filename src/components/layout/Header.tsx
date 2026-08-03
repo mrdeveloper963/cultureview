@@ -1,11 +1,11 @@
 import Link from 'next/link'
 import { Globe, Search } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { createServerClient } from '@/lib/supabase/server'
+import { createClient } from '@/lib/supabase/server'
 import { UserNav } from '@/components/layout/UserNav'
 
 export async function Header() {
-  const supabase = await createServerClient()
+  const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
   return (

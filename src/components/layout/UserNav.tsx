@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { User, LogOut, Settings } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { createBrowserClient } from '@/lib/supabase/client'
+import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
 
 interface UserNavProps {
@@ -24,7 +24,7 @@ export function UserNav({ user }: UserNavProps) {
 
   const handleSignOut = async () => {
     setIsLoggingOut(true)
-    const supabase = createBrowserClient()
+    const supabase = createClient()
     await supabase.auth.signOut()
     router.push('/')
     router.refresh()
