@@ -22,9 +22,12 @@ export function CategoryList({ categories, countryId, postCounts = {} }: Categor
               <CardContent className="p-6">
                 <div className="flex items-start justify-between">
                   <div className="space-y-2">
-                    <h3 className="font-semibold text-lg group-hover:text-primary transition-colors">
-                      {category.nameEn}
-                    </h3>
+                    <div className="flex items-center gap-2">
+                      <span className="text-2xl">{category.icon}</span>
+                      <h3 className="font-semibold text-lg group-hover:text-primary transition-colors">
+                        {category.nameEn}
+                      </h3>
+                    </div>
                     {category.nameFa && (
                       <p className="text-sm text-muted-foreground">{category.nameFa}</p>
                     )}
