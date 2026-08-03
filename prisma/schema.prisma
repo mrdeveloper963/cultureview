@@ -10,26 +10,9 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// User model
-model User {
-  id             String   @id @default(uuid())
-  email          String   @unique
-  username       String   @unique
-  passwordHash   String?  @map("password_hash")
-  avatarUrl      String?  @map("avatar_url")
-  homeCountryId  Int?     @map("home_country_id")
-  createdAt      DateTime @default(now()) @map("created_at")
-  updatedAt      DateTime @updatedAt @map("updated_at")
-
-  homeCountry    Country?        @relation("UserHomeCountry", fields: [homeCountryId], references: [id])
-  posts          Post[]
-  comments       Comment[]
-  votes          Vote[]
-  userCountries  UserCountry[]
-  reports        Report[]
-
-  @@map("users")
-}
+// Note: We use Supabase Auth for user management
+// User data is stored in auth.users table
+// userId fields in other tables reference auth.users.id (as String UUID)
 
 // Country model
 model Country {
@@ -41,9 +24,7 @@ model Country {
   totalPosts  Int      @default(0) @map("total_posts")
   createdAt   DateTime @default(now()) @map("created_at")
 
-  posts         Post[]
-  users         User[]          @relation("UserHomeCountry")
-  userCountries UserCountry[]
+  posts Post[]
 
   @@map("countries")
 }
@@ -68,7 +49,7 @@ model Category {
 // Post/Opinion model
 model Post {
   id              String   @id @default(uuid())
-  userId          String   @map("user_id")
+  userId          String   @map("user_id") // References auth.users.id
   countryId       Int      @map("country_id")
   categoryId      Int      @map("category_id")
   title           String?
@@ -82,7 +63,6 @@ model Post {
   createdAt       DateTime @default(now()) @map("created_at")
   updatedAt       DateTime @updatedAt @map("updated_at")
 
-  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   country  Country   @relation(fields: [countryId], references: [id])
   category Category  @relation(fields: [categoryId], references: [id])
   comments Comment[]
@@ -99,7 +79,7 @@ model Post {
 model Comment {
   id              String   @id @default(uuid())
   postId          String   @map("post_id")
-  userId          String   @map("user_id")
+  userId          String   @map("user_id") // References auth.users.id
   parentCommentId String?  @map("parent_comment_id")
   content         String
   likesCount      Int      @default(0) @map("likes_count")
@@ -109,7 +89,6 @@ model Comment {
   updatedAt       DateTime @updatedAt @map("updated_at")
 
   post          Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
-  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   parentComment Comment?  @relation("CommentReplies", fields: [parentCommentId], references: [id], onDelete: Cascade)
   replies       Comment[] @relation("CommentReplies")
   votes         Vote[]
@@ -117,19 +96,19 @@ model Comment {
 
   @@index([postId])
   @@index([parentCommentId])
+  @@index([userId])
   @@map("comments")
 }
 
 // Vote model (for both posts and comments)
 model Vote {
   id        String   @id @default(uuid())
-  userId    String   @map("user_id")
+  userId    String   @map("user_id") // References auth.users.id
   postId    String?  @map("post_id")
   commentId String?  @map("comment_id")
-  voteType  String   @map("vote_type")
+  voteType  String   @map("vote_type") // 'like' or 'dislike'
   createdAt DateTime @default(now()) @map("created_at")
 
-  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   post    Post?    @relation(fields: [postId], references: [id], onDelete: Cascade)
   comment Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
 
@@ -140,36 +119,21 @@ model Vote {
   @@map("votes")
 }
 
-// UserCountry model (countries user has experience with)
-model UserCountry {
-  id             Int      @id @default(autoincrement())
-  userId         String   @map("user_id")
-  countryId      Int      @map("country_id")
-  experienceType String   @map("experience_type")
-
-  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  country Country @relation(fields: [countryId], references: [id])
-
-  @@unique([userId, countryId])
-  @@map("user_countries")
-}
-
 // Report model (for content moderation)
 model Report {
   id          String    @id @default(uuid())
-  reporterId  String    @map("reporter_user_id")
+  reporterId  String    @map("reporter_user_id") // References auth.users.id
   postId      String?   @map("post_id")
   commentId   String?   @map("comment_id")
   reason      String
   description String?
   status      String    @default("pending")
-  reviewedBy  String?   @map("reviewed_by")
+  reviewedBy  String?   @map("reviewed_by") // References auth.users.id
   reviewedAt  DateTime? @map("reviewed_at")
   createdAt   DateTime  @default(now()) @map("created_at")
 
-  reporter User     @relation(fields: [reporterId], references: [id])
-  post     Post?    @relation(fields: [postId], references: [id], onDelete: Cascade)
-  comment  Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  post    Post?    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  comment Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
 
   @@map("reports")
 }

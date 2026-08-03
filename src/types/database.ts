@@ -1,20 +1,6 @@
 // TypeScript types for database models
 import { Prisma } from '@prisma/client'
 
-// User types
-export type User = Prisma.UserGetPayload<{}>
-export type UserWithRelations = Prisma.UserGetPayload<{
-  include: {
-    homeCountry: true
-    posts: true
-    userCountries: {
-      include: {
-        country: true
-      }
-    }
-  }
-}>
-
 // Country types
 export type Country = Prisma.CountryGetPayload<{}>
 
@@ -25,7 +11,6 @@ export type Category = Prisma.CategoryGetPayload<{}>
 export type Post = Prisma.PostGetPayload<{}>
 export type PostWithRelations = Prisma.PostGetPayload<{
   include: {
-    user: true
     country: true
     category: true
     comments: true
@@ -37,7 +22,6 @@ export type PostWithRelations = Prisma.PostGetPayload<{
 export type Comment = Prisma.CommentGetPayload<{}>
 export type CommentWithRelations = Prisma.CommentGetPayload<{
   include: {
-    user: true
     replies: true
     votes: true
   }
@@ -50,7 +34,7 @@ export type Vote = Prisma.VoteGetPayload<{}>
 export type Report = Prisma.ReportGetPayload<{}>
 
 // Experience type enum
-export type ExperienceType = 'native' | 'lived' | 'traveled' | 'heard'
+export type ExperienceType = 'native' | 'lived' | 'visited' | 'heard'
 
 // Vote type enum
 export type VoteType = 'like' | 'dislike'

@@ -76,6 +76,7 @@ export function PostForm({
 
       if (!response.ok) {
         const data = await response.json()
+        console.error('Server error:', data)
         throw new Error(data.error || 'Failed to create post')
       }
 
