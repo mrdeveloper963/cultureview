@@ -1,0 +1,56 @@
+import { redirect } from 'next/navigation'
+import { createServerClient } from '@/lib/supabase/server'
+import { SignUpForm } from '@/components/auth/SignUpForm'
+import Link from 'next/link'
+import { Globe } from 'lucide-react'
+
+export default async function SignUpPage() {
+  const supabase = await createServerClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (user) {
+    redirect('/')
+  }
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-muted/30 px-4 py-12">
+      <div className="w-full max-w-md">
+        {/* Logo */}
+        <Link href="/" className="flex items-center justify-center gap-2 mb-8">
+          <Globe className="h-8 w-8 text-primary" />
+          <span className="text-2xl font-bold">CultureView</span>
+        </Link>
+
+        {/* Sign Up Card */}
+        <div className="bg-background rounded-lg border shadow-lg p-8">
+          <div className="mb-6 text-center">
+            <h1 className="text-3xl font-bold mb-2">Create Account</h1>
+            <p className="text-muted-foreground">
+              Join our community to share your experiences
+            </p>
+          </div>
+
+          <SignUpForm />
+
+          <div className="mt-6 text-center text-sm">
+            <span className="text-muted-foreground">Already have an account? </span>
+            <Link href="/auth/login" className="text-primary font-medium hover:underline">
+              Sign in
+            </Link>
+          </div>
+        </div>
+
+        <p className="mt-6 text-center text-xs text-muted-foreground">
+          By creating an account, you agree to our{' '}
+          <Link href="/terms" className="underline hover:text-foreground">
+            Terms of Service
+          </Link>{' '}
+          and{' '}
+          <Link href="/privacy" className="underline hover:text-foreground">
+            Privacy Policy
+          </Link>
+        </p>
+      </div>
+    </div>
+  )
+}

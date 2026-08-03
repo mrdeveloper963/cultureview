@@ -69,6 +69,11 @@ export function PostForm({
         }),
       })
 
+      if (response.status === 401) {
+        router.push('/auth/login')
+        return
+      }
+
       if (!response.ok) {
         const data = await response.json()
         throw new Error(data.error || 'Failed to create post')

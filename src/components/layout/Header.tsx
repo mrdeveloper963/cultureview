@@ -1,8 +1,13 @@
 import Link from 'next/link'
 import { Globe, Search } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { createServerClient } from '@/lib/supabase/server'
+import { UserNav } from '@/components/layout/UserNav'
 
-export function Header() {
+export async function Header() {
+  const supabase = await createServerClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
@@ -39,12 +44,18 @@ export function Header() {
           <Button variant="ghost" size="icon" className="md:hidden">
             <Search className="h-5 w-5" />
           </Button>
-          <Link href="/auth/login">
-            <Button variant="outline" size="sm">Login</Button>
-          </Link>
-          <Link href="/auth/signup">
-            <Button size="sm">Sign Up</Button>
-          </Link>
+          {user ? (
+            <UserNav user={user} />
+          ) : (
+            <>
+              <Link href="/auth/login">
+                <Button variant="outline" size="sm">Login</Button>
+              </Link>
+              <Link href="/auth/signup">
+                <Button size="sm">Sign Up</Button>
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </header>

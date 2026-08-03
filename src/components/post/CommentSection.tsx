@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { MessageSquare, User, Send } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -12,6 +13,7 @@ interface CommentSectionProps {
 }
 
 export function CommentSection({ postId, initialComments }: CommentSectionProps) {
+  const router = useRouter()
   const [comments, setComments] = useState(initialComments)
   const [newComment, setNewComment] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -29,6 +31,11 @@ export function CommentSection({ postId, initialComments }: CommentSectionProps)
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ content: newComment.trim() }),
       })
+
+      if (response.status === 401) {
+        router.push('/auth/login')
+        return
+      }
 
       if (!response.ok) throw new Error('Failed to post comment')
 

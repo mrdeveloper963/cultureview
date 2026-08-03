@@ -1,11 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
+import { createServerClient } from '@/lib/supabase/server'
 
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const supabase = await createServerClient()
+    const { data: { user } } = await supabase.auth.getUser()
+
+    if (!user) {
+      return NextResponse.json(
+        { error: 'Unauthorized. Please sign in to comment.' },
+        { status: 401 }
+      )
+    }
+
     const { id } = await params
     const body = await request.json()
     const { content } = body
@@ -31,7 +42,7 @@ export async function POST(
     const comment = await prisma.comment.create({
       data: {
         postId: id,
-        userId: 'anonymous',
+        userId: user.id,
         content: content.trim(),
       },
     })
