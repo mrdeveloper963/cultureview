@@ -15,18 +15,10 @@ export function CountryCard({ country }: CountryCardProps) {
         <CardContent className="p-6">
           <div className="flex items-start gap-4">
             {/* Flag */}
-            <div className="flex h-16 w-16 items-center justify-center rounded-lg bg-muted text-4xl">
-              {country.flagUrl ? (
-                <img
-                  src={country.flagUrl}
-                  alt={`${country.nameEn} flag`}
-                  className="h-full w-full object-cover rounded-lg"
-                />
-              ) : (
-                <span className="text-2xl font-bold text-muted-foreground">
-                  {country.code}
-                </span>
-              )}
+            <div className="flex h-16 w-16 items-center justify-center rounded-lg bg-primary/10 border-2 border-primary/20">
+              <span className="text-xl font-bold text-primary uppercase">
+                {country.code}
+              </span>
             </div>
 
             {/* Info */}
