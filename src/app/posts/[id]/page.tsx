@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { ArrowLeft, ThumbsUp, ThumbsDown, MessageSquare, Flag, User } from 'lucide-react'
+import { ArrowLeft, ThumbsUp, ThumbsDown, MessageSquare, User } from 'lucide-react'
 import Link from 'next/link'
 import { prisma } from '@/lib/db'
 import { Button } from '@/components/ui/button'
@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { VoteButtons } from '@/components/post/VoteButtons'
 import { CommentSection } from '@/components/post/CommentSection'
+import { ReportButton } from '@/components/report/ReportButton'
 
 async function getPost(id: string) {
   const post = await prisma.post.findUnique({
@@ -110,10 +111,7 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
               initialLikes={post.likesCount}
               initialDislikes={post.dislikesCount}
             />
-            <Button variant="ghost" size="sm" className="gap-2 text-muted-foreground">
-              <Flag className="h-4 w-4" />
-              Report
-            </Button>
+            <ReportButton postId={post.id} variant="ghost" size="sm" />
           </div>
 
           {/* Comments Section */}

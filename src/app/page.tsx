@@ -46,15 +46,12 @@ export default async function HomePage() {
 
         {/* Search Bar */}
         <div className="flex gap-2 max-w-xl mx-auto">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              type="search"
-              placeholder="Search countries..."
-              className="pl-10"
-            />
-          </div>
-          <Button>Search</Button>
+          <a href="/search" className="w-full">
+            <Button size="lg" className="w-full">
+              <Search className="h-5 w-5 mr-2" />
+              Search All Experiences
+            </Button>
+          </a>
         </div>
       </div>
 

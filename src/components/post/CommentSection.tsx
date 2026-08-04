@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { MessageSquare, User, Send } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
+import { ReportButton } from '@/components/report/ReportButton'
 import type { Comment } from '@/types/database'
 
 interface CommentSectionProps {
@@ -106,9 +107,12 @@ export function CommentSection({ postId, initialComments }: CommentSectionProps)
                         {new Date(comment.createdAt).toLocaleDateString()}
                       </span>
                     </div>
-                    <p className="text-sm leading-relaxed whitespace-pre-wrap">
+                    <p className="text-sm leading-relaxed whitespace-pre-wrap mb-3">
                       {comment.content}
                     </p>
+                    <div className="flex items-center gap-2">
+                      <ReportButton commentId={comment.id} variant="ghost" size="sm" />
+                    </div>
                   </div>
                 </div>
               </CardContent>
