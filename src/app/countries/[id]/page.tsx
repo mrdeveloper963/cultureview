@@ -1,30 +1,18 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { prisma } from '@/lib/db'
-import { USE_MOCK_DATA, mockCountries, mockCategories } from '@/lib/mock-data'
+import { CategoryFilter } from '@/components/country/CategoryFilter'
+import { PostList } from '@/components/post/PostList'
 import '../../organic-theme.css'
 
 async function getCountry(id: number) {
-  if (USE_MOCK_DATA) {
-    return mockCountries.find(c => c.id === id)
-  }
   const country = await prisma.country.findUnique({
     where: { id },
-    include: {
-      posts: {
-        select: {
-          categoryId: true,
-        },
-      },
-    },
   })
   return country
 }
 
 async function getCategories() {
-  if (USE_MOCK_DATA) {
-    return mockCategories
-  }
   const categories = await prisma.category.findMany({
     orderBy: {
       displayOrder: 'asc',
@@ -33,17 +21,55 @@ async function getCategories() {
   return categories
 }
 
-export default async function CountryPage({ params }: { params: Promise<{ id: string }> }) {
+async function getPosts(countryId: number, categoryId?: number) {
+  const posts = await prisma.post.findMany({
+    where: {
+      countryId,
+      isPublished: true,
+      ...(categoryId ? { categoryId } : {}),
+    },
+    include: {
+      user: {
+        select: {
+          id: true,
+          email: true,
+        },
+      },
+      category: true,
+      country: true,
+      _count: {
+        select: {
+          comments: true,
+        },
+      },
+    },
+    orderBy: {
+      createdAt: 'desc',
+    },
+  })
+  return posts
+}
+
+export default async function CountryPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>
+  searchParams: Promise<{ category?: string }>
+}) {
   const { id } = await params
+  const { category } = await searchParams
   const countryId = parseInt(id)
+  const categoryId = category ? parseInt(category) : undefined
 
   if (isNaN(countryId)) {
     notFound()
   }
 
-  const [country, categories] = await Promise.all([
+  const [country, categories, posts] = await Promise.all([
     getCountry(countryId),
     getCategories(),
+    getPosts(countryId, categoryId),
   ])
 
   if (!country) {
@@ -118,56 +144,39 @@ export default async function CountryPage({ params }: { params: Promise<{ id: st
               <Link href={`/posts/new?country=${country.id}`} className="organic-btn organic-btn-primary">
                 Share Your Experience
               </Link>
-              <Link href={`/countries/${country.id}/all`} className="organic-btn" style={{ border: '1px solid var(--color-divider)' }}>
-                View All Opinions
-              </Link>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Categories */}
+      {/* Category Filter & Posts */}
       <div style={{ padding: '0 calc(var(--space-8) * 1.6) calc(var(--space-8) * 3)' }}>
         <div style={{ marginBottom: 'var(--space-6)' }}>
-          <h2 style={{ marginBottom: 'var(--space-2)' }}>Cultural Categories</h2>
-          <p className="organic-card-meta" style={{ fontSize: '14px' }}>
-            Explore different aspects of {country.nameEn} culture through community experiences.
-          </p>
+          <h2 style={{ marginBottom: 'var(--space-4)' }}>Cultural Experiences</h2>
+          <CategoryFilter
+            categories={categories}
+            countryId={country.id}
+            currentCategoryId={categoryId}
+          />
         </div>
 
-        <div className="cats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'var(--space-4)' }}>
-          {categories.map((category, i) => (
-            <Link key={category.id} href={`/countries/${country.id}/categories/${category.id}`}>
-              <div className="organic-card reveal" style={{ gap: 'var(--space-3)', animationDelay: `${i * 0.05}s` }}>
-                <div style={{ fontSize: '32px', lineHeight: 1 }}>
-                  {category.icon}
-                </div>
-                <div className="organic-card-title">{category.nameEn}</div>
-                <p className="organic-card-body">{category.descriptionEn}</p>
-                <div className="organic-card-meta">
-                  {Math.floor(Math.random() * 50) + 10} opinions
-                </div>
-              </div>
+        {posts.length > 0 ? (
+          <PostList posts={posts} />
+        ) : (
+          <div style={{ textAlign: 'center', padding: 'calc(var(--space-8) * 2)', borderRadius: 'var(--radius-lg)', background: 'var(--color-surface)' }}>
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ margin: '0 auto var(--space-4)', opacity: 0.4 }}>
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+            <h3 style={{ fontSize: '20px', fontFamily: 'var(--font-heading)', marginBottom: 'var(--space-2)' }}>No Opinions Yet</h3>
+            <p style={{ opacity: 0.7, marginBottom: 'var(--space-6)' }}>
+              Be the first to share your experience about {country.nameEn} culture{categoryId ? ' in this category' : ''}!
+            </p>
+            <Link href={`/posts/new?country=${country.id}${categoryId ? `&category=${categoryId}` : ''}`} className="organic-btn organic-btn-primary">
+              Share Your Experience
             </Link>
-          ))}
-        </div>
+          </div>
+        )}
       </div>
-
-      {/* Empty State */}
-      {country.totalPosts === 0 && (
-        <div style={{ margin: '0 calc(var(--space-8) * 1.6) calc(var(--space-8) * 3)', textAlign: 'center', padding: 'calc(var(--space-8) * 2)', borderRadius: 'var(--radius-lg)', background: 'var(--color-surface)' }}>
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ margin: '0 auto var(--space-4)', opacity: 0.4 }}>
-            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-          </svg>
-          <h3 style={{ fontSize: '20px', fontFamily: 'var(--font-heading)', marginBottom: 'var(--space-2)' }}>No Opinions Yet</h3>
-          <p style={{ opacity: 0.7, marginBottom: 'var(--space-6)' }}>
-            Be the first to share your experience about {country.nameEn} culture!
-          </p>
-          <Link href={`/posts/new?country=${country.id}`} className="organic-btn organic-btn-primary">
-            Share Your Experience
-          </Link>
-        </div>
-      )}
 
       {/* Footer */}
       <footer style={{ padding: 'calc(var(--space-8) * 2) calc(var(--space-8) * 1.6) calc(var(--space-8) * 1.6)', display: 'flex', justifyContent: 'space-between', gap: 'var(--space-8)', flexWrap: 'wrap' }}>
