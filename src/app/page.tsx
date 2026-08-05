@@ -38,13 +38,13 @@ export default async function HomePage() {
   return (
     <div className="organic-theme">
       {/* Navigation */}
-      <nav className="organic-nav">
-        <div className="organic-brand">CultureView</div>
-        <div style={{ marginLeft: 'auto', display: 'flex', gap: 'var(--space-2)', alignItems: 'center' }}>
-          <Link href="/auth/login" className="organic-btn organic-btn-ghost">
+      <nav className="organic-nav" style={{ padding: 'var(--space-4) calc(var(--space-8) * 1.6)', flexWrap: 'wrap' }}>
+        <div className="organic-brand" style={{ whiteSpace: 'nowrap' }}>CultureView</div>
+        <div style={{ marginLeft: 'auto', display: 'flex', gap: 'var(--space-2)', alignItems: 'center', flexShrink: 0 }}>
+          <Link href="/auth/login" className="organic-btn organic-btn-ghost" style={{ whiteSpace: 'nowrap' }}>
             Log in
           </Link>
-          <Link href="/auth/signup" className="organic-btn organic-btn-primary">
+          <Link href="/auth/signup" className="organic-btn organic-btn-primary" style={{ whiteSpace: 'nowrap' }}>
             Sign up
           </Link>
         </div>
@@ -221,29 +221,38 @@ export default async function HomePage() {
       </section>
 
       {/* Footer */}
-      <footer style={{ padding: 'calc(var(--space-8) * 2) calc(var(--space-8) * 1.6) var(--space-6)', display: 'flex', justifyContent: 'space-between', gap: 'var(--space-8)', flexWrap: 'wrap' }}>
+      <footer style={{ padding: 'calc(var(--space-8) * 2) calc(var(--space-8) * 1.6) calc(var(--space-8) * 1.6)', display: 'flex', justifyContent: 'space-between', gap: 'var(--space-8)', flexWrap: 'wrap' }}>
         <div style={{ maxWidth: '280px' }}>
           <div className="organic-brand" style={{ marginBottom: 'var(--space-2)' }}>CultureView</div>
           <p className="organic-card-meta" style={{ fontSize: '13px' }}>Real culture, from real people.</p>
         </div>
         <div style={{ display: 'flex', gap: 'var(--space-8)', flexWrap: 'wrap' }}>
           <div>
-            <div className="organic-card-meta" style={{ marginBottom: 'var(--space-2)', textTransform: 'uppercase', letterSpacing: '0.1em', fontSize: '10px' }}>Explore</div>
+            <div className="organic-card-kicker" style={{ marginBottom: 'var(--space-2)' }}>Explore</div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
               <Link href="/">Countries</Link>
               <Link href="/">Categories</Link>
+              <Link href="/">Trending</Link>
             </div>
           </div>
           <div>
-            <div className="organic-card-meta" style={{ marginBottom: 'var(--space-2)', textTransform: 'uppercase', letterSpacing: '0.1em', fontSize: '10px' }}>Company</div>
+            <div className="organic-card-kicker" style={{ marginBottom: 'var(--space-2)' }}>Company</div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
+              <Link href="/">About</Link>
               <Link href="/guidelines">Content guidelines</Link>
+            </div>
+          </div>
+          <div>
+            <div className="organic-card-kicker" style={{ marginBottom: 'var(--space-2)' }}>Legal</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
+              <Link href="/">Terms of use</Link>
+              <Link href="/">Privacy policy</Link>
             </div>
           </div>
         </div>
       </footer>
 
-      <div style={{ height: '1px', margin: '0 calc(var(--space-8) * 1.6) var(--space-4)', background: 'var(--color-divider)' }}></div>
+      <div className="organic-hr" style={{ margin: '0 calc(var(--space-8) * 1.6) var(--space-4)' }}></div>
       <div className="organic-card-meta" style={{ padding: '0 calc(var(--space-8) * 1.6) var(--space-6)', fontSize: '12px' }}>
         © 2026 CultureView. All opinions are user submitted.
       </div>
