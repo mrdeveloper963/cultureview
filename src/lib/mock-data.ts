@@ -13,11 +13,15 @@ export const mockCountries = [
 ]
 
 export const mockCategories = [
-  { id: 1, slug: 'work-culture', nameEn: 'Work Culture', nameFa: 'فرهنگ کاری', descriptionEn: 'Work-life balance, office culture, workplace norms', descriptionFa: null, icon: '💼', displayOrder: 1, createdAt: new Date() },
-  { id: 2, slug: 'food-dining', nameEn: 'Food & Dining', nameFa: 'غذا و رستوران', descriptionEn: 'Cuisine, dining etiquette, food culture', descriptionFa: null, icon: '🍽️', displayOrder: 2, createdAt: new Date() },
-  { id: 3, slug: 'social-norms', nameEn: 'Social Norms', nameFa: 'هنجارهای اجتماعی', descriptionEn: 'Greetings, personal space, social expectations', descriptionFa: null, icon: '🤝', displayOrder: 3, createdAt: new Date() },
-  { id: 4, slug: 'communication', nameEn: 'Communication Style', nameFa: 'سبک ارتباطی', descriptionEn: 'Directness, formality, non-verbal cues', descriptionFa: null, icon: '💬', displayOrder: 4, createdAt: new Date() },
-  { id: 5, slug: 'time-punctuality', nameEn: 'Time & Punctuality', nameFa: 'زمان و دقت', descriptionEn: 'Attitudes toward time, scheduling, punctuality', descriptionFa: null, icon: '⏰', displayOrder: 5, createdAt: new Date() },
+  { id: 1, slug: 'work-culture', nameEn: 'Work Culture', nameFa: null, descriptionEn: 'How people show up, lead, and switch off at work.', descriptionFa: null, icon: '💼', displayOrder: 1, createdAt: new Date() },
+  { id: 2, slug: 'food-culture', nameEn: 'Food Culture', nameFa: null, descriptionEn: 'Meal times, table manners, and what\'s polite to order.', descriptionFa: null, icon: '🍽️', displayOrder: 2, createdAt: new Date() },
+  { id: 3, slug: 'family-life', nameEn: 'Family Life', nameFa: null, descriptionEn: 'Roles, closeness, and how households are run.', descriptionFa: null, icon: '👨‍👩‍👧‍👦', displayOrder: 3, createdAt: new Date() },
+  { id: 4, slug: 'manners-etiquette', nameEn: 'Manners & Etiquette', nameFa: null, descriptionEn: 'Small courtesies that mean a lot.', descriptionFa: null, icon: '🤝', displayOrder: 4, createdAt: new Date() },
+  { id: 5, slug: 'punctuality', nameEn: 'Punctuality', nameFa: null, descriptionEn: 'What "on time" actually means, day to day.', descriptionFa: null, icon: '⏰', displayOrder: 5, createdAt: new Date() },
+  { id: 6, slug: 'hospitality', nameEn: 'Hospitality', nameFa: null, descriptionEn: 'How guests are welcomed and treated.', descriptionFa: null, icon: '🏠', displayOrder: 6, createdAt: new Date() },
+  { id: 7, slug: 'driving-culture', nameEn: 'Driving Culture', nameFa: null, descriptionEn: 'Rules on paper vs. rules on the road.', descriptionFa: null, icon: '🚗', displayOrder: 7, createdAt: new Date() },
+  { id: 8, slug: 'attitudes-to-strangers', nameEn: 'Attitudes to Strangers', nameFa: null, descriptionEn: 'How open or reserved people are with people they don\'t know.', descriptionFa: null, icon: '👥', displayOrder: 8, createdAt: new Date() },
+  { id: 9, slug: 'dress-code', nameEn: 'Dress Code', nameFa: null, descriptionEn: 'What\'s expected, and what draws a stare.', descriptionFa: null, icon: '👔', displayOrder: 9, createdAt: new Date() },
 ]
 
 export const mockPosts = [

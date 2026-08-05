@@ -139,8 +139,12 @@ export default async function HomePage() {
           {countries.slice(0, 6).map((country, i) => (
             <Link key={country.id} href={`/countries/${country.id}`}>
               <div className="organic-card reveal" style={{ flexDirection: 'row', alignItems: 'center', gap: 'var(--space-3)', animationDelay: `${i * 0.05}s` }}>
-                <div style={{ width: '42px', height: '42px', borderRadius: '50%', background: 'var(--color-accent-2-100)', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-heading)', fontSize: '14px', color: 'var(--color-accent)' }}>
-                  {country.code}
+                <div style={{ width: '42px', height: '42px', borderRadius: '50%', background: 'var(--color-accent-2-100)', flexShrink: 0, overflow: 'hidden' }}>
+                  <img
+                    src={`https://flagcdn.com/w80/${country.code.toLowerCase()}.png`}
+                    alt={`${country.nameEn} flag`}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                  />
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div className="organic-card-title" style={{ fontSize: '16px' }}>{country.nameEn}</div>
