@@ -1,8 +1,9 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
-import { Header } from '@/components/layout/Header'
-import { Footer } from '@/components/layout/Footer'
+// Old header and footer commented out - using new organic design in pages
+// import { Header } from '@/components/layout/Header'
+// import { Footer } from '@/components/layout/Footer'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -26,9 +27,9 @@ export default function RootLayout({
     <html lang="en" dir="ltr" className={inter.variable} suppressHydrationWarning>
       <body className="min-h-screen bg-background font-sans antialiased">
         <div className="relative flex min-h-screen flex-col">
-          <Header />
+          {/* Old Header removed - using new organic design */}
           <main className="flex-1">{children}</main>
-          <Footer />
+          {/* Old Footer removed - using new organic design */}
         </div>
       </body>
     </html>
