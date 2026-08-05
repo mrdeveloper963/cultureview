@@ -2,8 +2,6 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { createClient } from '@/lib/supabase/client'
 
 export function SignUpForm() {
@@ -80,36 +78,36 @@ export function SignUpForm() {
 
   if (success) {
     return (
-      <div className="text-center space-y-4">
-        <div className="p-4 rounded-lg bg-green-500/10 text-green-700 dark:text-green-400">
-          <p className="font-semibold mb-1">Check your email!</p>
-          <p className="text-sm">
-            We've sent you a confirmation link. Click it to activate your account.
+      <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+        <div style={{ padding: 'var(--space-4)', borderRadius: 'var(--radius-md)', background: 'color-mix(in srgb, #22c55e 10%, transparent)', color: '#16a34a' }}>
+          <p style={{ fontWeight: 600, marginBottom: '4px' }}>Check your email!</p>
+          <p style={{ fontSize: '14px' }}>
+            We&apos;ve sent you a confirmation link. Click it to activate your account.
           </p>
         </div>
-        <Button onClick={() => router.push('/auth/login')} variant="outline" className="w-full">
+        <button onClick={() => router.push('/auth/login')} className="organic-btn" style={{ width: '100%', border: '1px solid var(--color-divider)' }}>
           Go to Sign In
-        </Button>
+        </button>
       </div>
     )
   }
 
   return (
-    <div className="space-y-6">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
       {/* Error Message */}
       {error && (
-        <div className="p-3 rounded-lg bg-destructive/10 text-destructive text-sm">
+        <div style={{ padding: 'var(--space-3)', borderRadius: 'var(--radius-md)', background: 'color-mix(in srgb, #dc2626 10%, transparent)', color: '#dc2626', fontSize: '14px' }}>
           {error}
         </div>
       )}
 
       {/* Email/Password Form */}
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="space-y-2">
-          <label htmlFor="email" className="text-sm font-medium">
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+          <label htmlFor="email" style={{ fontSize: '12px', opacity: 0.7 }}>
             Email
           </label>
-          <Input
+          <input
             id="email"
             type="email"
             placeholder="you@example.com"
@@ -117,14 +115,15 @@ export function SignUpForm() {
             value={formData.email}
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             disabled={isLoading}
+            className="organic-input"
           />
         </div>
 
-        <div className="space-y-2">
-          <label htmlFor="password" className="text-sm font-medium">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+          <label htmlFor="password" style={{ fontSize: '12px', opacity: 0.7 }}>
             Password
           </label>
-          <Input
+          <input
             id="password"
             type="password"
             placeholder="••••••••"
@@ -132,17 +131,18 @@ export function SignUpForm() {
             value={formData.password}
             onChange={(e) => setFormData({ ...formData, password: e.target.value })}
             disabled={isLoading}
+            className="organic-input"
           />
-          <p className="text-xs text-muted-foreground">
+          <p style={{ fontSize: '11px', opacity: 0.6 }}>
             Must be at least 6 characters
           </p>
         </div>
 
-        <div className="space-y-2">
-          <label htmlFor="confirmPassword" className="text-sm font-medium">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+          <label htmlFor="confirmPassword" style={{ fontSize: '12px', opacity: 0.7 }}>
             Confirm Password
           </label>
-          <Input
+          <input
             id="confirmPassword"
             type="password"
             placeholder="••••••••"
@@ -150,34 +150,34 @@ export function SignUpForm() {
             value={formData.confirmPassword}
             onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
             disabled={isLoading}
+            className="organic-input"
           />
         </div>
 
-        <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
+        <button type="submit" className="organic-btn organic-btn-primary" style={{ width: '100%', padding: 'var(--space-3) var(--space-4)' }} disabled={isLoading}>
           {isLoading ? 'Creating account...' : 'Create Account'}
-        </Button>
+        </button>
       </form>
 
       {/* Divider */}
-      <div className="relative">
-        <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t"></div>
+      <div style={{ position: 'relative', margin: 'var(--space-2) 0' }}>
+        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center' }}>
+          <div className="organic-hr" style={{ width: '100%' }}></div>
         </div>
-        <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
+        <div style={{ position: 'relative', display: 'flex', justifyContent: 'center', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+          <span style={{ background: 'var(--color-surface)', padding: '0 var(--space-2)', opacity: 0.6 }}>Or continue with</span>
         </div>
       </div>
 
       {/* Google Sign Up */}
-      <Button
+      <button
         type="button"
-        variant="outline"
-        size="lg"
-        className="w-full"
+        className="organic-btn"
+        style={{ width: '100%', padding: 'var(--space-3) var(--space-4)', border: '1px solid var(--color-divider)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 'var(--space-2)' }}
         onClick={handleGoogleSignUp}
         disabled={isLoading}
       >
-        <svg className="mr-2 h-5 w-5" viewBox="0 0 24 24">
+        <svg style={{ width: '20px', height: '20px' }} viewBox="0 0 24 24">
           <path
             d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
             fill="#4285F4"
@@ -196,7 +196,7 @@ export function SignUpForm() {
           />
         </svg>
         Sign up with Google
-      </Button>
+      </button>
     </div>
   )
 }

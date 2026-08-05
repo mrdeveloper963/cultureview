@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { SignUpForm } from '@/components/auth/SignUpForm'
 import Link from 'next/link'
-import { Globe } from 'lucide-react'
+import '../../../app/organic-theme.css'
 
 export default async function SignUpPage() {
   const supabase = await createClient()
@@ -13,43 +13,53 @@ export default async function SignUpPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-muted/30 px-4 py-12">
-      <div className="w-full max-w-md">
-        {/* Logo */}
-        <Link href="/" className="flex items-center justify-center gap-2 mb-8">
-          <Globe className="h-8 w-8 text-primary" />
-          <span className="text-2xl font-bold">CultureView</span>
+    <div className="organic-theme" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      {/* Navigation */}
+      <nav className="organic-nav" style={{ padding: 'var(--space-4) calc(var(--space-8) * 1.6)', flexWrap: 'wrap' }}>
+        <Link href="/" className="organic-brand" style={{ whiteSpace: 'nowrap', textDecoration: 'none', color: 'inherit' }}>
+          CultureView
         </Link>
+        <div style={{ marginLeft: 'auto', display: 'flex', gap: 'var(--space-2)', alignItems: 'center', flexShrink: 0 }}>
+          <Link href="/auth/login" className="organic-btn organic-btn-ghost" style={{ whiteSpace: 'nowrap' }}>
+            Log in
+          </Link>
+        </div>
+      </nav>
 
-        {/* Sign Up Card */}
-        <div className="bg-background rounded-lg border shadow-lg p-8">
-          <div className="mb-6 text-center">
-            <h1 className="text-3xl font-bold mb-2">Create Account</h1>
-            <p className="text-muted-foreground">
+      {/* Main Content */}
+      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'var(--space-8) var(--space-4)' }}>
+        <div style={{ width: '100%', maxWidth: '420px' }}>
+          {/* Header */}
+          <div style={{ textAlign: 'center', marginBottom: 'var(--space-6)' }}>
+            <h1 style={{ marginBottom: 'var(--space-2)' }}>Create Account</h1>
+            <p style={{ fontSize: '15px', opacity: 0.8 }}>
               Join our community to share your experiences
             </p>
           </div>
 
-          <SignUpForm />
+          {/* Sign Up Card */}
+          <div className="organic-card" style={{ padding: 'var(--space-6)', gap: 'var(--space-4)' }}>
+            <SignUpForm />
 
-          <div className="mt-6 text-center text-sm">
-            <span className="text-muted-foreground">Already have an account? </span>
-            <Link href="/auth/login" className="text-primary font-medium hover:underline">
-              Sign in
-            </Link>
+            <div style={{ textAlign: 'center', fontSize: '14px', marginTop: 'var(--space-2)' }}>
+              <span style={{ opacity: 0.7 }}>Already have an account? </span>
+              <Link href="/auth/login" style={{ color: 'var(--color-accent)', textDecoration: 'none', fontWeight: 600 }}>
+                Sign in
+              </Link>
+            </div>
           </div>
-        </div>
 
-        <p className="mt-6 text-center text-xs text-muted-foreground">
-          By creating an account, you agree to our{' '}
-          <Link href="/terms" className="underline hover:text-foreground">
-            Terms of Service
-          </Link>{' '}
-          and{' '}
-          <Link href="/privacy" className="underline hover:text-foreground">
-            Privacy Policy
-          </Link>
-        </p>
+          <p style={{ marginTop: 'var(--space-4)', textAlign: 'center', fontSize: '12px', opacity: 0.6 }}>
+            By creating an account, you agree to our{' '}
+            <Link href="/terms" style={{ color: 'var(--color-accent)', textDecoration: 'underline' }}>
+              Terms of Service
+            </Link>{' '}
+            and{' '}
+            <Link href="/privacy" style={{ color: 'var(--color-accent)', textDecoration: 'underline' }}>
+              Privacy Policy
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   )
