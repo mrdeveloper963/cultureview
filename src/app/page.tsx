@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { mockCountries, mockCategories, USE_MOCK_DATA } from '@/lib/mock-data'
 import { prisma } from '@/lib/db'
+import './organic-theme.css'
 
 async function getCountries() {
   if (USE_MOCK_DATA) {
@@ -36,200 +37,6 @@ export default async function HomePage() {
 
   return (
     <div className="organic-theme">
-      <style jsx global>{`
-        @import url('https://fonts.googleapis.com/css2?family=Caprasimo:wght@400&family=Figtree:wght@400;600;700&display=swap');
-
-        .organic-theme {
-          --color-bg: #f5ead8;
-          --color-surface: #ebddc5;
-          --color-text: #201e1d;
-          --color-accent: #c67139;
-          --color-accent-2: #7a8a5e;
-          --color-divider: color-mix(in srgb, #201e1d 16%, transparent);
-          --color-accent-100: #fff2eb;
-          --color-accent-600: #b2622d;
-          --color-accent-800: #643312;
-          --color-accent-2-100: #f0fae1;
-          --font-heading: "Caprasimo", system-ui, sans-serif;
-          --font-body: "Figtree", system-ui, sans-serif;
-          --space-2: 8.8px;
-          --space-3: 13.2px;
-          --space-4: 17.6px;
-          --space-6: 26.4px;
-          --space-8: 35.2px;
-          --radius-md: 16px;
-          --radius-lg: 28px;
-          --shadow-md: 0 3px 10px color-mix(in srgb, #2e2b25 16%, transparent);
-
-          width: 100%;
-          max-width: 1440px;
-          margin: 0 auto;
-          background: var(--color-bg);
-          color: var(--color-text);
-          font-family: var(--font-body);
-          min-height: 100vh;
-        }
-
-        .organic-theme h1, .organic-theme h2, .organic-theme h3 {
-          font-family: var(--font-heading);
-          font-weight: 400;
-          line-height: 1.12;
-          letter-spacing: -0.015em;
-        }
-
-        .organic-theme h1 { font-size: 42px; margin-bottom: var(--space-3); }
-        .organic-theme h2 { font-size: 32px; margin-bottom: var(--space-4); }
-
-        .organic-nav {
-          display: flex;
-          align-items: center;
-          gap: var(--space-4);
-          padding: var(--space-4) calc(var(--space-8) * 1.6);
-          flex-wrap: wrap;
-        }
-
-        .organic-brand {
-          font-family: var(--font-heading);
-          font-size: 18px;
-          margin-right: auto;
-          white-space: nowrap;
-        }
-
-        .organic-btn {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          gap: 6px;
-          cursor: pointer;
-          font-family: var(--font-heading);
-          font-size: 14px;
-          padding: var(--space-2) calc(var(--space-3) * 1.2);
-          border-radius: var(--radius-md);
-          border: 1px solid transparent;
-          transition: all 0.12s ease-out;
-          text-decoration: none;
-        }
-
-        .organic-btn-primary {
-          background: var(--color-accent);
-          color: var(--color-bg);
-        }
-
-        .organic-btn-primary:hover {
-          background: var(--color-accent-600);
-        }
-
-        .organic-btn-ghost {
-          color: var(--color-accent);
-        }
-
-        .organic-btn-ghost:hover {
-          background: color-mix(in srgb, var(--color-accent) 10%, transparent);
-        }
-
-        .organic-tag {
-          display: inline-flex;
-          font-size: 11px;
-          letter-spacing: 0.02em;
-          padding: 3px 10px;
-          border-radius: calc(var(--radius-md) * 0.75);
-        }
-
-        .organic-tag-accent {
-          background: var(--color-accent-100);
-          color: var(--color-accent-800);
-        }
-
-        .organic-tag-outline {
-          border: 1px solid var(--color-accent);
-          color: var(--color-accent);
-          cursor: pointer;
-          transition: background 0.12s ease-out;
-        }
-
-        .organic-tag-outline:hover {
-          background: var(--color-accent-100);
-        }
-
-        .organic-card {
-          display: flex;
-          flex-direction: column;
-          gap: var(--space-2);
-          padding: var(--space-3);
-          border-radius: var(--radius-md);
-          background: var(--color-surface);
-          transition: transform 0.15s ease-out, box-shadow 0.15s ease-out;
-        }
-
-        .organic-card:hover {
-          box-shadow: var(--shadow-md);
-          transform: translateY(-2px);
-        }
-
-        .organic-card-title {
-          font-family: var(--font-heading);
-          font-size: 17px;
-          line-height: 1.2;
-        }
-
-        .organic-card-body {
-          font-size: 13px;
-          opacity: 0.8;
-        }
-
-        .organic-card-meta {
-          font-size: 11px;
-          color: color-mix(in srgb, var(--color-text) 50%, transparent);
-        }
-
-        .organic-input {
-          width: 100%;
-          min-height: 36px;
-          padding: 6px 10px;
-          padding-left: 32px;
-          font: inherit;
-          font-size: 14px;
-          color: var(--color-text);
-          background: var(--color-surface);
-          border: 1px solid var(--color-divider);
-          border-radius: var(--radius-md);
-        }
-
-        .organic-input:focus {
-          outline: 2px solid var(--color-accent);
-          outline-offset: 0;
-          border-color: var(--color-accent);
-        }
-
-        .reveal {
-          opacity: 0;
-          transform: translateY(16px);
-          animation: revealIn 0.5s ease-out forwards;
-        }
-
-        @keyframes revealIn {
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        @media (max-width: 960px) {
-          .cats-grid { grid-template-columns: repeat(2, 1fr) !important; }
-          .country-grid { grid-template-columns: repeat(2, 1fr) !important; }
-        }
-
-        @media (max-width: 640px) {
-          .organic-nav { padding: var(--space-3) var(--space-4) !important; }
-          .site-header { padding: calc(var(--space-8) * 1.6) var(--space-4) var(--space-6) !important; }
-          .site-header h1 { font-size: 30px !important; }
-          section { padding-left: var(--space-4) !important; padding-right: var(--space-4) !important; }
-          .stats-grid { grid-template-columns: 1fr 1fr !important; }
-          .cats-grid { grid-template-columns: 1fr !important; }
-          .country-grid { grid-template-columns: 1fr !important; }
-        }
-      `}</style>
-
       {/* Navigation */}
       <nav className="organic-nav">
         <div className="organic-brand">CultureView</div>
@@ -246,9 +53,9 @@ export default async function HomePage() {
       {/* Hero Section */}
       <header className="site-header" style={{ padding: 'calc(var(--space-8) * 3) calc(var(--space-8) * 1.6) calc(var(--space-8) * 2)', maxWidth: '760px' }}>
         <div className="organic-tag organic-tag-accent" style={{ marginBottom: 'var(--space-3)' }}>
-          A COMMUNITY OF PEOPLE WHO'VE BEEN THERE
+          A COMMUNITY OF PEOPLE WHO HAVE BEEN THERE
         </div>
-        <h1>What's a country really like? Ask the people who've lived it.</h1>
+        <h1>What&apos;s a country really like? Ask the people who&apos;ve lived it.</h1>
         <p style={{ fontSize: '17px', opacity: 0.85, maxWidth: '600px', margin: 0 }}>
           Real opinions on work, food, family, manners, and more — shared by locals, travelers, and expats, and rated by everyone else. No brochures, no clichés.
         </p>
@@ -351,7 +158,7 @@ export default async function HomePage() {
 
       {/* Testimonials Section */}
       <section style={{ padding: '0 calc(var(--space-8) * 1.6) calc(var(--space-8) * 3)' }}>
-        <h2>From people who've actually been there</h2>
+        <h2>From people who&apos;ve actually been there</h2>
         <p className="organic-card-meta" style={{ fontSize: '14px', marginBottom: 'var(--space-6)', maxWidth: '520px' }}>
           Every opinion is tagged with how the person knows the country.
         </p>
@@ -359,7 +166,7 @@ export default async function HomePage() {
           {[
             { quote: "I moved to Berlin for work and the biggest surprise wasn't the language — it was how seriously people take being five minutes early.", tag: 'Lived in Germany · 3 years' },
             { quote: 'Everyone told me Brazilians were loud and always late. My experience was the opposite once I actually had local friends.', tag: 'Traveled to Brazil' },
-            { quote: 'In Japan, silence in a conversation isn\'t awkward, it\'s normal. Took me months to stop trying to fill every gap.', tag: 'Lived in Japan · 2 years' },
+            { quote: "In Japan, silence in a conversation isn't awkward, it's normal. Took me months to stop trying to fill every gap.", tag: 'Lived in Japan · 2 years' },
           ].map((testimonial, i) => (
             <div key={i} className="organic-card reveal" style={{ gap: 'var(--space-3)', animationDelay: `${i * 0.1}s` }}>
               <p className="organic-card-body" style={{ fontSize: '15px', fontStyle: 'italic', opacity: 0.95, flex: 1 }}>
@@ -376,9 +183,9 @@ export default async function HomePage() {
         <h2 style={{ marginBottom: 'var(--space-6)' }}>How CultureView works</h2>
         <div style={{ display: 'flex', gap: 'var(--space-6)', flexWrap: 'wrap' }}>
           {[
-            { num: '01', title: 'Pick a country and a category', text: 'Start with a place you're curious about, then narrow down to work, food, family, or any of the nine categories.' },
-            { num: '02', title: 'Read real experiences', text: 'See what locals, travelers, and expats actually say — each opinion is tagged with how well they know the place.' },
-            { num: '03', title: 'Vote on what rings true', text: 'Agree or disagree based on your own experience. The most trusted opinions rise to the top.' },
+            { num: '01', title: 'Pick a country and a category', text: "Start with a place you're curious about, then narrow down to work, food, family, or any of the nine categories." },
+            { num: '02', title: 'Read real experiences', text: "See what locals, travelers, and expats actually say — each opinion is tagged with how well they know the place." },
+            { num: '03', title: 'Vote on what rings true', text: "Agree or disagree based on your own experience. The most trusted opinions rise to the top." },
           ].map((step) => (
             <div key={step.num} className="reveal" style={{ flex: 1, minWidth: '220px' }}>
               <div style={{ fontFamily: 'var(--font-heading)', fontSize: '36px', color: 'var(--color-accent)', marginBottom: 'var(--space-2)' }}>
