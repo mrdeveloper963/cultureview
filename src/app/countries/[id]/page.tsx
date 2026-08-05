@@ -1,11 +1,15 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { prisma } from '@/lib/db'
+import { USE_MOCK_DATA, mockCountries, mockCategories, mockPosts } from '@/lib/mock-data'
 import { CategoryFilter } from '@/components/country/CategoryFilter'
 import { PostList } from '@/components/post/PostList'
 import '../../organic-theme.css'
 
 async function getCountry(id: number) {
+  if (USE_MOCK_DATA) {
+    return mockCountries.find(c => c.id === id)
+  }
   const country = await prisma.country.findUnique({
     where: { id },
   })
@@ -13,6 +17,9 @@ async function getCountry(id: number) {
 }
 
 async function getCategories() {
+  if (USE_MOCK_DATA) {
+    return mockCategories
+  }
   const categories = await prisma.category.findMany({
     orderBy: {
       displayOrder: 'asc',
@@ -22,6 +29,12 @@ async function getCategories() {
 }
 
 async function getPosts(countryId: number, categoryId?: number) {
+  if (USE_MOCK_DATA) {
+    return mockPosts.filter(p =>
+      p.countryId === countryId &&
+      (categoryId ? p.categoryId === categoryId : true)
+    )
+  }
   const posts = await prisma.post.findMany({
     where: {
       countryId,

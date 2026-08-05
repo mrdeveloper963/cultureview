@@ -40,6 +40,10 @@ export const mockPosts = [
     isReported: false,
     createdAt: new Date('2024-01-15'),
     updatedAt: new Date('2024-01-15'),
+    user: { id: 'user-1', email: 'user1@example.com' },
+    category: { id: 1, nameEn: 'Work Culture', icon: '💼' },
+    country: { id: 5, nameEn: 'Japan', code: 'JP' },
+    _count: { comments: 5 },
   },
   {
     id: '2',
@@ -56,6 +60,30 @@ export const mockPosts = [
     isReported: false,
     createdAt: new Date('2024-01-14'),
     updatedAt: new Date('2024-01-14'),
+    user: { id: 'user-2', email: 'user2@example.com' },
+    category: { id: 2, nameEn: 'Food Culture', icon: '🍽️' },
+    country: { id: 3, nameEn: 'Germany', code: 'DE' },
+    _count: { comments: 3 },
+  },
+  {
+    id: '3',
+    userId: 'user-3',
+    countryId: 5,
+    categoryId: 4,
+    title: 'Silence is normal',
+    content: 'In Japan, silence in a conversation isn\'t awkward, it\'s normal. People take time to think before speaking. Took me months to stop trying to fill every gap with words.',
+    experienceType: 'lived',
+    likesCount: 31,
+    dislikesCount: 1,
+    commentsCount: 8,
+    isPublished: true,
+    isReported: false,
+    createdAt: new Date('2024-01-16'),
+    updatedAt: new Date('2024-01-16'),
+    user: { id: 'user-3', email: 'user3@example.com' },
+    category: { id: 4, nameEn: 'Manners & Etiquette', icon: '🤝' },
+    country: { id: 5, nameEn: 'Japan', code: 'JP' },
+    _count: { comments: 8 },
   },
 ]
 
@@ -74,4 +102,4 @@ export const mockComments = [
   },
 ]
 
-export const USE_MOCK_DATA = false // Toggle this when database is available
+export const USE_MOCK_DATA = true // Toggle this when database is available
