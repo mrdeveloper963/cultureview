@@ -102,4 +102,4 @@ export const mockComments = [
   },
 ]
 
-export const USE_MOCK_DATA = true // Toggle this when database is available
+export const USE_MOCK_DATA = false // Toggle this when database is available
