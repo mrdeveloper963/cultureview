@@ -11,14 +11,15 @@ interface Post {
   likesCount: number
   dislikesCount: number
   createdAt: Date
-  user: {
+  user?: {
     id: string
     email: string
   }
+  userId?: string
   category: {
     id: number
     nameEn: string
-    icon: string
+    icon: string | null
   }
   country: {
     id: number

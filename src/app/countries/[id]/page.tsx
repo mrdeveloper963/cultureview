@@ -42,12 +42,6 @@ async function getPosts(countryId: number, categoryId?: number) {
       ...(categoryId ? { categoryId } : {}),
     },
     include: {
-      user: {
-        select: {
-          id: true,
-          email: true,
-        },
-      },
       category: true,
       country: true,
       _count: {
@@ -60,7 +54,15 @@ async function getPosts(countryId: number, categoryId?: number) {
       createdAt: 'desc',
     },
   })
-  return posts
+
+  // Add user info (userId is already in the post)
+  return posts.map(post => ({
+    ...post,
+    user: {
+      id: post.userId,
+      email: 'user@example.com', // We don't have access to Supabase auth users directly
+    },
+  }))
 }
 
 export default async function CountryPage({

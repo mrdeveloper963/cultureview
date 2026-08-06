@@ -11,14 +11,15 @@ interface Post {
   likesCount: number
   dislikesCount: number
   createdAt: Date
-  user: {
+  user?: {
     id: string
     email: string
   }
+  userId?: string
   category: {
     id: number
     nameEn: string
-    icon: string
+    icon: string | null
   }
   country: {
     id: number
@@ -100,7 +101,7 @@ export function PostCard({ post }: PostCardProps) {
       <div style={{ display: 'flex', alignItems: 'start', justifyContent: 'space-between', gap: 'var(--space-3)' }}>
         <div style={{ flex: 1 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', marginBottom: 'var(--space-2)', flexWrap: 'wrap' }}>
-            <span style={{ fontSize: '20px', lineHeight: 1 }}>{post.category.icon}</span>
+            {post.category.icon && <span style={{ fontSize: '20px', lineHeight: 1 }}>{post.category.icon}</span>}
             <span className="organic-card-title" style={{ fontSize: '14px' }}>{post.category.nameEn}</span>
             <span className="organic-card-meta">•</span>
             <span className="organic-tag organic-tag-accent-2" style={{ fontSize: '10px', padding: '2px 8px' }}>
