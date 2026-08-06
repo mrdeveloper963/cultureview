@@ -32,17 +32,14 @@ async function main() {
     include: {
       category: true,
       country: true,
-      user: {
-        select: { email: true }
-      }
     },
     take: 5,
   })
 
   console.log(`\nPosts (${posts.length} total):`)
   posts.forEach(post => {
-    console.log(`  - "${post.title || 'Untitled'}" by ${post.user.email}`)
-    console.log(`    ${post.category.icon} ${post.category.nameEn} in ${post.country.nameEn}`)
+    console.log(`  - "${post.title || 'Untitled'}" by user ${post.userId}`)
+    console.log(`    ${post.category.icon || '❌'} ${post.category.nameEn} in ${post.country.nameEn}`)
   })
 }
 

@@ -1,5 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Caprasimo:wght@400&family=Figtree:wght@400;600;700&display=swap');
 
+/* CultureView Organic Design Theme - v1.1 */
+
 .organic-theme {
   --color-bg: #f5ead8;
   --color-surface: #ebddc5;
@@ -97,6 +99,16 @@
   background: color-mix(in srgb, var(--color-accent) 10%, transparent);
 }
 
+.organic-btn-outline {
+  border: 1px solid var(--color-divider);
+  color: var(--color-text);
+}
+
+.organic-btn-outline:hover {
+  background: var(--color-surface);
+  border-color: var(--color-accent);
+}
+
 .organic-tag {
   display: inline-flex;
   font-size: 11px;
@@ -121,6 +133,11 @@
   background: var(--color-accent-100);
 }
 
+.organic-tag-accent-2 {
+  background: var(--color-accent-2-100);
+  color: var(--color-accent-2);
+}
+
 .organic-card {
   display: flex;
   flex-direction: column;
@@ -134,6 +151,11 @@
 .organic-card:hover {
   box-shadow: var(--shadow-md);
   transform: translateY(-2px);
+}
+
+.organic-card-horizontal {
+  flex-direction: row !important;
+  align-items: center !important;
 }
 
 .organic-card-title {
@@ -206,6 +228,16 @@
   }
 }
 
+@media (max-width: 960px) {
+  /* Post page responsive */
+  main > div[style*="grid-template-columns: 1fr 380px"] {
+    grid-template-columns: 1fr !important;
+  }
+  main > div > div[style*="position: sticky"] {
+    position: static !important;
+  }
+}
+
 @media (max-width: 640px) {
   .organic-nav {
     padding: var(--space-3) var(--space-4) !important;
@@ -232,5 +264,8 @@
   }
   footer {
     flex-direction: column !important;
+  }
+  main {
+    padding: var(--space-4) !important;
   }
 }

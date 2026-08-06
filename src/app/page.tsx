@@ -1,23 +1,35 @@
 import Link from 'next/link'
-import { mockCountries, mockCategories, USE_MOCK_DATA } from '@/lib/mock-data'
 import { prisma } from '@/lib/db'
+import { CountrySearch } from '@/components/home/CountrySearch'
+import { Navigation } from '@/components/layout/Navigation'
 import './organic-theme.css'
 
+// ISR: Revalidate every 60 seconds
+export const revalidate = 60
+
 async function getCountries() {
-  if (USE_MOCK_DATA) {
-    return mockCountries
-  }
   const countries = await prisma.country.findMany({
+    select: {
+      id: true,
+      nameEn: true,
+      code: true,
+      totalPosts: true,
+    },
     orderBy: { nameEn: 'asc' },
   })
   return countries
 }
 
 async function getCategories() {
-  if (USE_MOCK_DATA) {
-    return mockCategories
-  }
   const categories = await prisma.category.findMany({
+    select: {
+      id: true,
+      slug: true,
+      nameEn: true,
+      descriptionEn: true,
+      icon: true,
+      displayOrder: true,
+    },
     orderBy: { displayOrder: 'asc' },
   })
   return categories
@@ -38,17 +50,7 @@ export default async function HomePage() {
   return (
     <div className="organic-theme">
       {/* Navigation */}
-      <nav className="organic-nav" style={{ padding: 'var(--space-4) calc(var(--space-8) * 1.6)', flexWrap: 'wrap' }}>
-        <div className="organic-brand" style={{ whiteSpace: 'nowrap' }}>CultureView</div>
-        <div style={{ marginLeft: 'auto', display: 'flex', gap: 'var(--space-2)', alignItems: 'center', flexShrink: 0 }}>
-          <Link href="/auth/login" className="organic-btn organic-btn-ghost" style={{ whiteSpace: 'nowrap' }}>
-            Log in
-          </Link>
-          <Link href="/auth/signup" className="organic-btn organic-btn-primary" style={{ whiteSpace: 'nowrap' }}>
-            Sign up
-          </Link>
-        </div>
-      </nav>
+      <Navigation />
 
       {/* Hero Section */}
       <header className="site-header" style={{ padding: 'calc(var(--space-8) * 3) calc(var(--space-8) * 1.6) calc(var(--space-8) * 2)', maxWidth: '760px' }}>
@@ -61,31 +63,22 @@ export default async function HomePage() {
         </p>
 
         {/* Search Bar */}
-        <div style={{ display: 'flex', gap: 'var(--space-2)', marginTop: 'var(--space-4)', maxWidth: '520px' }}>
-          <div style={{ flex: 1, position: 'relative' }}>
-            <span style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-text)', opacity: 0.55 }}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
-                <circle cx="10.5" cy="10.5" r="6.5"></circle>
-                <line x1="21" y1="21" x2="15.5" y2="15.5"></line>
-              </svg>
-            </span>
-            <input
-              type="text"
-              placeholder="Search for a country, like Japan or Brazil"
-              className="organic-input"
-            />
-          </div>
-          <button className="organic-btn organic-btn-primary">Search</button>
+        <div style={{ marginTop: 'var(--space-4)' }}>
+          <CountrySearch countries={countries} />
         </div>
 
         {/* Popular Countries */}
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-2)', alignItems: 'center', marginTop: 'var(--space-3)' }}>
           <span className="organic-card-meta" style={{ fontSize: '11px' }}>Popular:</span>
-          {['Japan', 'Germany', 'Brazil', 'India', 'France', 'United States'].map((country) => (
-            <button key={country} className="organic-tag organic-tag-outline">
-              {country}
-            </button>
-          ))}
+          {countries
+            .filter(c => ['Japan', 'Germany', 'Brazil', 'India', 'France', 'United States'].includes(c.nameEn))
+            .map((country) => (
+              <Link key={country.id} href={`/countries/${country.id}`}>
+                <button className="organic-tag organic-tag-outline">
+                  {country.nameEn}
+                </button>
+              </Link>
+            ))}
         </div>
       </header>
 
@@ -122,7 +115,6 @@ export default async function HomePage() {
                 </div>
                 <div className="organic-card-title">{category.nameEn}</div>
                 <p className="organic-card-body">{category.descriptionEn}</p>
-                <div className="organic-card-meta">142 opinions</div>
               </div>
             </Link>
           ))}
@@ -138,12 +130,13 @@ export default async function HomePage() {
         <div className="country-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'var(--space-4)' }}>
           {countries.slice(0, 6).map((country, i) => (
             <Link key={country.id} href={`/countries/${country.id}`}>
-              <div className="organic-card reveal" style={{ flexDirection: 'row', alignItems: 'center', gap: 'var(--space-3)', animationDelay: `${i * 0.05}s` }}>
-                <div style={{ width: '42px', height: '42px', borderRadius: '50%', background: 'var(--color-accent-2-100)', flexShrink: 0, overflow: 'hidden' }}>
+              <div className="organic-card organic-card-horizontal reveal" style={{ gap: 'var(--space-3)', animationDelay: `${i * 0.05}s` }}>
+                <div style={{ width: '48px', height: '48px', borderRadius: '50%', flexShrink: 0, overflow: 'hidden', border: '2px solid var(--color-divider)' }}>
                   <img
                     src={`https://flagcdn.com/w80/${country.code.toLowerCase()}.png`}
                     alt={`${country.nameEn} flag`}
                     style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                    loading="eager"
                   />
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
@@ -234,9 +227,7 @@ export default async function HomePage() {
           <div>
             <div className="organic-card-kicker" style={{ marginBottom: 'var(--space-2)' }}>Explore</div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
-              <Link href="/">Countries</Link>
-              <Link href="/">Categories</Link>
-              <Link href="/">Trending</Link>
+              <Link href="/countries">Countries</Link>
             </div>
           </div>
           <div>
@@ -249,8 +240,8 @@ export default async function HomePage() {
           <div>
             <div className="organic-card-kicker" style={{ marginBottom: 'var(--space-2)' }}>Legal</div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
-              <Link href="/">Terms of use</Link>
-              <Link href="/">Privacy policy</Link>
+              <Link href="/terms">Terms of use</Link>
+              <Link href="/privacy">Privacy policy</Link>
             </div>
           </div>
         </div>

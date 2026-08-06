@@ -2,11 +2,15 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { MessageSquare, User, Send } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
-import { ReportButton } from '@/components/report/ReportButton'
-import type { Comment } from '@/types/database'
+
+interface Comment {
+  id: string
+  content: string
+  createdAt: Date
+  userId: string
+  likesCount: number
+  dislikesCount: number
+}
 
 interface CommentSectionProps {
   postId: string
@@ -21,105 +25,166 @@ export function CommentSection({ postId, initialComments }: CommentSectionProps)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-
     if (!newComment.trim() || isSubmitting) return
 
     setIsSubmitting(true)
-
     try {
       const response = await fetch(`/api/posts/${postId}/comments`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content: newComment.trim() }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ content: newComment }),
       })
 
-      if (response.status === 401) {
-        router.push('/auth/login')
-        return
+      if (response.ok) {
+        const data = await response.json()
+        setComments([data.comment, ...comments])
+        setNewComment('')
+        router.refresh()
+      } else {
+        const error = await response.json()
+        alert(error.error || 'Failed to post comment')
       }
-
-      if (!response.ok) throw new Error('Failed to post comment')
-
-      const comment = await response.json()
-      setComments([comment, ...comments])
-      setNewComment('')
     } catch (error) {
-      console.error('Failed to post comment:', error)
+      console.error('Comment error:', error)
       alert('Failed to post comment. Please try again.')
     } finally {
       setIsSubmitting(false)
     }
   }
 
-  return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center gap-2">
-        <MessageSquare className="h-5 w-5" />
-        <h2 className="text-xl font-bold">
-          Comments ({comments.length})
-        </h2>
-      </div>
+  const formatDate = (date: Date) => {
+    const d = new Date(date)
+    const now = new Date()
+    const diffMs = now.getTime() - d.getTime()
+    const diffMins = Math.floor(diffMs / 60000)
+    const diffHours = Math.floor(diffMs / 3600000)
+    const diffDays = Math.floor(diffMs / 86400000)
 
-      {/* Add Comment Form */}
-      <Card>
-        <CardContent className="pt-6">
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <textarea
-              value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
-              placeholder="Share your thoughts or similar experiences..."
-              className="flex min-h-[100px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 resize-none"
-              rows={4}
-            />
-            <div className="flex justify-between items-center">
-              <span className="text-xs text-muted-foreground">
-                {newComment.length} characters
-              </span>
-              <Button type="submit" size="sm" disabled={isSubmitting || !newComment.trim()} className="gap-2">
-                <Send className="h-4 w-4" />
-                {isSubmitting ? 'Posting...' : 'Post Comment'}
-              </Button>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
+    if (diffMins < 1) return 'just now'
+    if (diffMins < 60) return `${diffMins}m ago`
+    if (diffHours < 24) return `${diffHours}h ago`
+    if (diffDays < 7) return `${diffDays}d ago`
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+  }
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+      {/* Comment Form */}
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
+        <textarea
+          value={newComment}
+          onChange={(e) => setNewComment(e.target.value)}
+          placeholder="Share your thoughts..."
+          className="organic-input"
+          style={{
+            minHeight: '100px',
+            resize: 'vertical',
+            fontFamily: 'inherit',
+            fontSize: '15px',
+            lineHeight: 1.6,
+          }}
+          disabled={isSubmitting}
+        />
+        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <button
+            type="submit"
+            className="organic-btn organic-btn-primary"
+            disabled={!newComment.trim() || isSubmitting}
+            style={{
+              opacity: (!newComment.trim() || isSubmitting) ? 0.5 : 1,
+              cursor: (!newComment.trim() || isSubmitting) ? 'not-allowed' : 'pointer',
+            }}
+          >
+            {isSubmitting ? 'Posting...' : 'Post Comment'}
+          </button>
+        </div>
+      </form>
 
       {/* Comments List */}
-      <div className="space-y-4">
-        {comments.length === 0 ? (
-          <div className="text-center py-12 text-muted-foreground">
-            <MessageSquare className="h-12 w-12 mx-auto mb-3 opacity-50" />
-            <p>No comments yet. Be the first to share your thoughts!</p>
-          </div>
-        ) : (
-          comments.map((comment) => (
-            <Card key={comment.id}>
-              <CardContent className="pt-6">
-                <div className="flex items-start gap-3">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted">
-                    <User className="h-4 w-4 text-muted-foreground" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="font-semibold text-sm">Anonymous User</span>
-                      <span className="text-xs text-muted-foreground">
-                        {new Date(comment.createdAt).toLocaleDateString()}
-                      </span>
-                    </div>
-                    <p className="text-sm leading-relaxed whitespace-pre-wrap mb-3">
-                      {comment.content}
-                    </p>
-                    <div className="flex items-center gap-2">
-                      <ReportButton commentId={comment.id} variant="ghost" size="sm" />
-                    </div>
+      {comments.length === 0 ? (
+        <div style={{ textAlign: 'center', padding: 'var(--space-6)', opacity: 0.6 }}>
+          <p className="organic-card-body">No comments yet. Be the first to share your thoughts!</p>
+        </div>
+      ) : (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+          {comments.map((comment) => (
+            <div
+              key={comment.id}
+              style={{
+                padding: 'var(--space-4)',
+                background: 'var(--color-surface)',
+                borderRadius: 'var(--radius-md)',
+                border: '1px solid var(--color-divider)',
+              }}
+            >
+              {/* Comment Header */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', marginBottom: 'var(--space-2)' }}>
+                <div
+                  style={{
+                    width: '32px',
+                    height: '32px',
+                    borderRadius: '50%',
+                    background: 'var(--color-accent)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '14px',
+                  }}
+                >
+                  👤
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: '14px', fontWeight: 600 }}>Anonymous</div>
+                  <div className="organic-card-meta" style={{ fontSize: '12px' }}>
+                    {formatDate(comment.createdAt)}
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-          ))
-        )}
-      </div>
+              </div>
+
+              {/* Comment Content */}
+              <p style={{ fontSize: '15px', lineHeight: 1.6, margin: '0 0 var(--space-3) 0', whiteSpace: 'pre-wrap' }}>
+                {comment.content}
+              </p>
+
+              {/* Comment Actions */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', paddingTop: 'var(--space-2)', borderTop: '1px solid var(--color-divider)' }}>
+                <button
+                  className="organic-btn organic-btn-ghost"
+                  style={{
+                    padding: 'var(--space-1) var(--space-2)',
+                    fontSize: '13px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 'var(--space-1)',
+                  }}
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path>
+                  </svg>
+                  <span>{comment.likesCount}</span>
+                </button>
+                <button
+                  className="organic-btn organic-btn-ghost"
+                  style={{
+                    padding: 'var(--space-1) var(--space-2)',
+                    fontSize: '13px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 'var(--space-1)',
+                  }}
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ transform: 'rotate(180deg)' }}>
+                    <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path>
+                  </svg>
+                  <span>{comment.dislikesCount}</span>
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

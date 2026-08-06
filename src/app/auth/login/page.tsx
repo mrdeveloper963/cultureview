@@ -5,12 +5,13 @@ import Link from 'next/link'
 import '../../../app/organic-theme.css'
 
 export default async function LoginPage() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  // Temporarily disabled user check to fix VS Code browser redirect issue
+  // const supabase = await createClient()
+  // const { data: { user } } = await supabase.auth.getUser()
 
-  if (user) {
-    redirect('/')
-  }
+  // if (user) {
+  //   redirect('/')
+  // }
 
   return (
     <div className="organic-theme" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, memo, useMemo } from 'react'
 import Link from 'next/link'
 
 interface Post {
@@ -42,10 +42,27 @@ const EXPERIENCE_LABELS: Record<string, string> = {
   heard: 'Heard from others',
 }
 
-export function PostCard({ post }: PostCardProps) {
+export const PostCard = memo(function PostCard({ post }: PostCardProps) {
   const [likes, setLikes] = useState(post.likesCount)
   const [dislikes, setDislikes] = useState(post.dislikesCount)
   const [userVote, setUserVote] = useState<'like' | 'dislike' | null>(null)
+
+  const formattedDate = useMemo(() => {
+    const now = new Date()
+    const diff = now.getTime() - new Date(post.createdAt).getTime()
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24))
+
+    if (days === 0) return 'Today'
+    if (days === 1) return 'Yesterday'
+    if (days < 7) return `${days} days ago`
+    if (days < 30) return `${Math.floor(days / 7)} weeks ago`
+    if (days < 365) return `${Math.floor(days / 30)} months ago`
+    return `${Math.floor(days / 365)} years ago`
+  }, [post.createdAt])
+
+  const truncatedContent = useMemo(() => {
+    return post.content.length > 300 ? `${post.content.slice(0, 300)}...` : post.content
+  }, [post.content])
 
   const handleVote = async (voteType: 'like' | 'dislike') => {
     // If clicking the same vote, remove it
@@ -82,18 +99,6 @@ export function PostCard({ post }: PostCardProps) {
     // TODO: Call API to save vote
   }
 
-  const formatDate = (date: Date) => {
-    const now = new Date()
-    const diff = now.getTime() - new Date(date).getTime()
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24))
-
-    if (days === 0) return 'Today'
-    if (days === 1) return 'Yesterday'
-    if (days < 7) return `${days} days ago`
-    if (days < 30) return `${Math.floor(days / 7)} weeks ago`
-    if (days < 365) return `${Math.floor(days / 30)} months ago`
-    return `${Math.floor(days / 365)} years ago`
-  }
 
   return (
     <div className="organic-card" style={{ padding: 'var(--space-4)', gap: 'var(--space-3)' }}>
@@ -118,7 +123,7 @@ export function PostCard({ post }: PostCardProps) {
 
       {/* Content */}
       <p style={{ fontSize: '14px', lineHeight: 1.6, opacity: 0.9 }}>
-        {post.content.length > 300 ? `${post.content.slice(0, 300)}...` : post.content}
+        {truncatedContent}
       </p>
 
       {/* Footer */}
@@ -195,7 +200,7 @@ export function PostCard({ post }: PostCardProps) {
 
         {/* Date & View Details */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
-          <span className="organic-card-meta" style={{ fontSize: '12px' }}>{formatDate(post.createdAt)}</span>
+          <span className="organic-card-meta" style={{ fontSize: '12px' }}>{formattedDate}</span>
           <Link
             href={`/posts/${post.id}`}
             className="organic-btn organic-btn-ghost"
@@ -207,4 +212,4 @@ export function PostCard({ post }: PostCardProps) {
       </div>
     </div>
   )
-}
+})

@@ -1,14 +1,10 @@
 import { Suspense } from 'react'
 import { prisma } from '@/lib/db'
-import { USE_MOCK_DATA, mockCountries, mockCategories } from '@/lib/mock-data'
 import { PostForm } from '@/components/post/PostForm'
 import Link from 'next/link'
 import '../../organic-theme.css'
 
 async function getCountries() {
-  if (USE_MOCK_DATA) {
-    return mockCountries
-  }
   const countries = await prisma.country.findMany({
     orderBy: { nameEn: 'asc' },
   })
@@ -16,9 +12,6 @@ async function getCountries() {
 }
 
 async function getCategories() {
-  if (USE_MOCK_DATA) {
-    return mockCategories
-  }
   const categories = await prisma.category.findMany({
     orderBy: { displayOrder: 'asc' },
   })

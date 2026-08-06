@@ -18,18 +18,10 @@ export async function GET(
       include: {
         posts: {
           include: {
-            user: {
-              select: {
-                id: true,
-                username: true,
-                avatarUrl: true,
-              },
-            },
             category: true,
             _count: {
               select: {
                 comments: true,
-                votes: true,
               },
             },
           },

@@ -52,7 +52,7 @@ export async function POST(
       data: { commentsCount: { increment: 1 } },
     })
 
-    return NextResponse.json(comment, { status: 201 })
+    return NextResponse.json({ comment }, { status: 201 })
   } catch (error) {
     console.error('Error creating comment:', error)
     return NextResponse.json(

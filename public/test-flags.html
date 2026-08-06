@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Flag Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            background: #f5ead8;
+        }
+        .flag-test {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin: 20px 0;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+        }
+        .flag-circle {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid #ccc;
+            flex-shrink: 0;
+        }
+        .flag-circle img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <h1>🚩 Flag Display Test</h1>
+    <p>If you can see flags below, the API works. If not, there's a network/browser issue.</p>
+
+    <div class="flag-test">
+        <div class="flag-circle">
+            <img src="https://flagcdn.com/w80/ar.png" alt="Argentina" loading="eager">
+        </div>
+        <div>
+            <strong>Argentina (AR)</strong><br>
+            URL: https://flagcdn.com/w80/ar.png
+        </div>
+    </div>
+
+    <div class="flag-test">
+        <div class="flag-circle">
+            <img src="https://flagcdn.com/w80/us.png" alt="USA" loading="eager">
+        </div>
+        <div>
+            <strong>United States (US)</strong><br>
+            URL: https://flagcdn.com/w80/us.png
+        </div>
+    </div>
+
+    <div class="flag-test">
+        <div class="flag-circle">
+            <img src="https://flagcdn.com/w80/jp.png" alt="Japan" loading="eager">
+        </div>
+        <div>
+            <strong>Japan (JP)</strong><br>
+            URL: https://flagcdn.com/w80/jp.png
+        </div>
+    </div>
+
+    <div class="flag-test">
+        <div class="flag-circle">
+            <img src="https://flagcdn.com/w80/br.png" alt="Brazil" loading="eager">
+        </div>
+        <div>
+            <strong>Brazil (BR)</strong><br>
+            URL: https://flagcdn.com/w80/br.png
+        </div>
+    </div>
+
+    <hr>
+    <p><a href="/">← بازگشت به صفحه اصلی</a></p>
+
+    <script>
+        // Log image load status
+        document.querySelectorAll('img').forEach(img => {
+            img.onload = function() {
+                console.log('✅ Loaded:', this.src);
+            };
+            img.onerror = function() {
+                console.error('❌ Failed to load:', this.src);
+                this.style.border = '2px solid red';
+            };
+        });
+    </script>
+</body>
+</html>

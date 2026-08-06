@@ -145,11 +145,8 @@ async function main() {
   await prisma.vote.deleteMany()
   await prisma.comment.deleteMany()
   await prisma.post.deleteMany()
-  await prisma.userCountry.deleteMany()
-  await prisma.report.deleteMany()
   await prisma.category.deleteMany()
   await prisma.country.deleteMany()
-  await prisma.user.deleteMany()
 
   // Seed countries
   console.log('🌍 Seeding countries...')

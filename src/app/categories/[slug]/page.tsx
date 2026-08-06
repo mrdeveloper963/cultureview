@@ -1,37 +1,73 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { prisma } from '@/lib/db'
-import { CategoryFilter } from '@/components/country/CategoryFilter'
 import { PostList } from '@/components/post/PostList'
+import { CountryFilter } from '@/components/category/CountryFilter'
 import { Navigation } from '@/components/layout/Navigation'
 import '../../organic-theme.css'
 
-async function getCountry(id: number) {
-  const country = await prisma.country.findUnique({
-    where: { id },
-  })
-  return country
-}
+// ISR: Revalidate every 60 seconds
+export const revalidate = 60
 
-async function getCategories() {
-  const categories = await prisma.category.findMany({
-    orderBy: {
-      displayOrder: 'asc',
+async function getCategory(slug: string) {
+  const category = await prisma.category.findUnique({
+    where: { slug },
+    select: {
+      id: true,
+      slug: true,
+      nameEn: true,
+      descriptionEn: true,
+      icon: true,
     },
   })
-  return categories
+  return category
 }
 
-async function getPosts(countryId: number, categoryId?: number) {
+async function getCountries() {
+  const countries = await prisma.country.findMany({
+    select: {
+      id: true,
+      nameEn: true,
+      totalPosts: true,
+    },
+    orderBy: { nameEn: 'asc' },
+  })
+  return countries
+}
+
+async function getPosts(categoryId: number, countryId?: number) {
   const posts = await prisma.post.findMany({
     where: {
-      countryId,
+      categoryId,
       isPublished: true,
-      ...(categoryId ? { categoryId } : {}),
+      ...(countryId ? { countryId } : {}),
     },
-    include: {
-      category: true,
-      country: true,
+    select: {
+      id: true,
+      userId: true,
+      title: true,
+      content: true,
+      experienceType: true,
+      likesCount: true,
+      dislikesCount: true,
+      commentsCount: true,
+      createdAt: true,
+      categoryId: true,
+      countryId: true,
+      category: {
+        select: {
+          id: true,
+          nameEn: true,
+          icon: true,
+        },
+      },
+      country: {
+        select: {
+          id: true,
+          nameEn: true,
+          code: true,
+        },
+      },
       _count: {
         select: {
           comments: true,
@@ -41,43 +77,42 @@ async function getPosts(countryId: number, categoryId?: number) {
     orderBy: {
       createdAt: 'desc',
     },
+    take: 50, // Limit results
   })
 
-  // Add user info (userId is already in the post)
+  // Add user info
   return posts.map(post => ({
     ...post,
     user: {
       id: post.userId,
-      email: 'user@example.com', // We don't have access to Supabase auth users directly
+      email: 'user@example.com',
     },
   }))
 }
 
-export default async function CountryPage({
+export default async function CategoryPage({
   params,
   searchParams,
 }: {
-  params: Promise<{ id: string }>
-  searchParams: Promise<{ category?: string }>
+  params: Promise<{ slug: string }>
+  searchParams: Promise<{ country?: string }>
 }) {
-  const { id } = await params
-  const { category } = await searchParams
-  const countryId = parseInt(id)
-  const categoryId = category ? parseInt(category) : undefined
+  const { slug } = await params
+  const { country } = await searchParams
+  const countryId = country ? parseInt(country) : undefined
 
-  if (isNaN(countryId)) {
+  const category = await getCategory(slug)
+
+  if (!category) {
     notFound()
   }
 
-  const [country, categories, posts] = await Promise.all([
-    getCountry(countryId),
-    getCategories(),
-    getPosts(countryId, categoryId),
+  const [countries, posts] = await Promise.all([
+    getCountries(),
+    getPosts(category.id, countryId).catch(() => []),
   ])
 
-  if (!country) {
-    notFound()
-  }
+  const selectedCountry = countryId ? countries.find(c => c.id === countryId) : null
 
   return (
     <div className="organic-theme" style={{ minHeight: '100vh' }}>
@@ -91,32 +126,29 @@ export default async function CountryPage({
             <line x1="19" y1="12" x2="5" y2="12"></line>
             <polyline points="12 19 5 12 12 5"></polyline>
           </svg>
-          Back to Countries
+          Back to Home
         </Link>
       </div>
 
-      {/* Country Header */}
+      {/* Category Header */}
       <div style={{ padding: '0 calc(var(--space-8) * 1.6) calc(var(--space-8) * 2)' }}>
         <div style={{ display: 'flex', alignItems: 'start', gap: 'var(--space-6)', marginBottom: 'var(--space-6)', flexWrap: 'wrap' }}>
-          {/* Flag */}
-          <div style={{ width: '120px', height: '120px', borderRadius: 'var(--radius-lg)', overflow: 'hidden', flexShrink: 0, boxShadow: 'var(--shadow-md)', border: '3px solid var(--color-surface)' }}>
-            <img
-              src={`https://flagcdn.com/w320/${country.code.toLowerCase()}.png`}
-              alt={`${country.nameEn} flag`}
-              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-              loading="eager"
-            />
-          </div>
+          {/* Icon */}
+          {category.icon && (
+            <div style={{ width: '120px', height: '120px', borderRadius: 'var(--radius-lg)', background: 'var(--color-accent-100)', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '64px', boxShadow: 'var(--shadow-md)' }}>
+              {category.icon}
+            </div>
+          )}
 
           {/* Info */}
           <div style={{ flex: 1, minWidth: '300px' }}>
-            <div style={{ display: 'flex', alignItems: 'start', justifyContent: 'space-between', marginBottom: 'var(--space-3)', gap: 'var(--space-4)', flexWrap: 'wrap' }}>
-              <div>
-                <h1 style={{ marginBottom: 'var(--space-2)' }}>{country.nameEn}</h1>
-              </div>
-              <div className="organic-tag organic-tag-accent" style={{ fontSize: '13px', padding: 'var(--space-2) var(--space-3)' }}>
-                {country.code}
-              </div>
+            <div style={{ marginBottom: 'var(--space-3)' }}>
+              <h1 style={{ marginBottom: 'var(--space-2)' }}>{category.nameEn}</h1>
+              {category.descriptionEn && (
+                <p style={{ fontSize: '18px', opacity: 0.8, margin: 0 }}>
+                  {category.descriptionEn}
+                </p>
+              )}
             </div>
 
             {/* Stats */}
@@ -126,44 +158,66 @@ export default async function CountryPage({
                   <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
                 </svg>
                 <span style={{ fontWeight: 600 }}>
-                  {country.totalPosts} {country.totalPosts === 1 ? 'Opinion' : 'Opinions'}
+                  {posts.length} {posts.length === 1 ? 'Opinion' : 'Opinions'}
+                </span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <path d="M2 12h20"></path>
+                  <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                </svg>
+                <span style={{ fontWeight: 600 }}>
+                  All Countries
                 </span>
               </div>
             </div>
 
-            {/* Action Buttons */}
-            <div style={{ display: 'flex', gap: 'var(--space-2)', flexWrap: 'wrap' }}>
-              <Link href={`/posts/new?country=${country.id}`} className="organic-btn organic-btn-primary">
-                Share Your Experience
-              </Link>
-            </div>
+            {/* Action Button */}
+            <Link href={`/posts/new?category=${category.id}`} className="organic-btn organic-btn-primary">
+              Share Your Experience
+            </Link>
           </div>
         </div>
       </div>
 
-      {/* Category Filter & Posts */}
+      {/* Country Filter & Posts */}
       <div style={{ padding: '0 calc(var(--space-8) * 1.6) calc(var(--space-8) * 3)' }}>
         <div style={{ marginBottom: 'var(--space-6)' }}>
-          <h2 style={{ marginBottom: 'var(--space-4)' }}>Cultural Experiences</h2>
-          <CategoryFilter
-            categories={categories}
-            countryId={country.id}
-            currentCategoryId={categoryId}
-          />
+          <h2 style={{ marginBottom: 'var(--space-4)' }}>
+            {selectedCountry ? `Experiences from ${selectedCountry.nameEn}` : 'All Experiences'}
+          </h2>
+
+          {/* Country Filter Dropdown */}
+          <div style={{ display: 'flex', gap: 'var(--space-3)', alignItems: 'center', flexWrap: 'wrap' }}>
+            <CountryFilter
+              countries={countries}
+              categorySlug={slug}
+              currentCountryId={countryId}
+            />
+
+            {selectedCountry && (
+              <Link href={`/categories/${slug}`} className="organic-btn organic-btn-ghost" style={{ fontSize: '13px' }}>
+                Clear filter
+              </Link>
+            )}
+          </div>
         </div>
 
         {posts.length > 0 ? (
           <PostList posts={posts} />
         ) : (
           <div style={{ textAlign: 'center', padding: 'calc(var(--space-8) * 2)', borderRadius: 'var(--radius-lg)', background: 'var(--color-surface)' }}>
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ margin: '0 auto var(--space-4)', opacity: 0.4 }}>
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-            </svg>
+            <div style={{ fontSize: '48px', marginBottom: 'var(--space-4)' }}>{category.icon}</div>
             <h3 style={{ fontSize: '20px', fontFamily: 'var(--font-heading)', marginBottom: 'var(--space-2)' }}>No Opinions Yet</h3>
             <p style={{ opacity: 0.7, marginBottom: 'var(--space-6)' }}>
-              Be the first to share your experience about {country.nameEn} culture{categoryId ? ' in this category' : ''}!
+              Be the first to share your experience about {category.nameEn}
+              {selectedCountry ? ` in ${selectedCountry.nameEn}` : ''}!
             </p>
-            <Link href={`/posts/new?country=${country.id}${categoryId ? `&category=${categoryId}` : ''}`} className="organic-btn organic-btn-primary">
+            <Link
+              href={`/posts/new?category=${category.id}${countryId ? `&country=${countryId}` : ''}`}
+              className="organic-btn organic-btn-primary"
+            >
               Share Your Experience
             </Link>
           </div>

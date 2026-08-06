@@ -1,15 +1,26 @@
-# CultureView
+# 🌍 CultureView
 
 A community-driven platform where users share authentic cultural experiences and insights about different countries.
 
-## Tech Stack
+## ✨ Features
 
-- **Framework:** Next.js 14+ (App Router)
-- **Language:** TypeScript
-- **Styling:** Tailwind CSS + shadcn/ui
+- 🗺️ Browse cultural insights from 46+ countries
+- 📝 Share your experiences (as local, expat, or traveler)
+- 🗳️ Vote on opinions (like/dislike)
+- 💬 Comment and discuss
+- 🏷️ 9 cultural categories (Work, Food, Family, etc.)
+- 🔍 Search and filter by country/category
+- 🎨 Beautiful organic design
+
+## 🚀 Tech Stack
+
+- **Framework:** Next.js 16 (App Router)
 - **Database:** PostgreSQL (Supabase)
 - **ORM:** Prisma
-- **Authentication:** Supabase Auth
+- **Auth:** Supabase Auth
+- **Styling:** CSS (Organic Theme)
+- **Deployment:** Vercel
+- **Performance:** ISR, React.memo, Optimized Images
 
 ## Project Structure
 
@@ -106,10 +117,36 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 - 📱 Responsive design
 - 🔐 User authentication and profiles
 
-## Development Roadmap
+## 🌐 Deployment
 
-See [docs/Features.md](../docs/Features.md) for detailed feature specifications and roadmap.
+### Deploy to Vercel (Recommended)
 
-## License
+1. Push your code to GitHub
+2. Go to [vercel.com](https://vercel.com)
+3. Import your GitHub repository
+4. Add environment variables (from `.env.example`)
+5. Deploy!
 
-MIT
+**Auto-deploy:** Every push to `main` branch = automatic deployment
+
+### Environment Variables on Vercel
+
+Go to Project Settings → Environment Variables and add:
+```
+DATABASE_URL
+NEXT_PUBLIC_SUPABASE_URL
+NEXT_PUBLIC_SUPABASE_ANON_KEY
+SUPABASE_SERVICE_ROLE_KEY
+NEXTAUTH_SECRET
+NEXT_PUBLIC_SITE_URL
+```
+
+## 🎨 Design System
+
+- **Colors:** Warm browns (#c67139), greens (#7a8a5e), cream (#f5ead8)
+- **Fonts:** Caprasimo (headings), Figtree (body)
+- **Theme:** Organic, warm, handcrafted feel
+
+## 📝 License
+
+MIT License - free to use for your own projects
