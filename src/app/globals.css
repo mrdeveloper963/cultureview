@@ -123,6 +123,7 @@
   }
   body {
     @apply bg-background text-foreground;
+    background-color: #f5ead8; /* Organic theme cream background */
   }
   html {
     @apply font-sans;
