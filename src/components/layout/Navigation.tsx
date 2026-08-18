@@ -9,7 +9,12 @@ export async function Navigation() {
       <a href="/" className="organic-brand" style={{ whiteSpace: 'nowrap', textDecoration: 'none', color: 'inherit' }}>
         CultureView
       </a>
-      <div style={{ marginLeft: 'auto', display: 'flex', gap: 'var(--space-2)', alignItems: 'center', flexShrink: 0 }}>
+      <div className="organic-nav-links" style={{ marginRight: 'auto' }}>
+        <a href="/countries">Countries</a>
+        <a href="/#categories">Categories</a>
+        <a href="/guidelines">Guidelines</a>
+      </div>
+      <div style={{ display: 'flex', gap: 'var(--space-2)', alignItems: 'center', flexShrink: 0 }}>
         {user ? (
           // User is logged in - show profile icon
           <a

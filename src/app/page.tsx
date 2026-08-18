@@ -46,6 +46,20 @@ export default async function HomePage() {
     opinions: countries.reduce((sum, c) => sum + c.totalPosts, 0),
     categories: categories.length,
   }
+  const isEarlyStage = stats.opinions < 10
+
+  const popularCountries = countries.filter(c =>
+    ['Japan', 'Germany', 'Brazil', 'India', 'France', 'United States'].includes(c.nameEn)
+  )
+
+  // Scattered layout presets for the hero flag collage
+  const heroFlagPositions = [
+    { top: '6px', right: '150px', size: 72 },
+    { top: '120px', right: '0px', size: 96 },
+    { top: '230px', right: '190px', size: 60 },
+    { top: '20px', right: '270px', size: 46 },
+    { top: '250px', right: '30px', size: 44 },
+  ]
 
   return (
     <div className="organic-theme">
@@ -53,32 +67,52 @@ export default async function HomePage() {
       <Navigation />
 
       {/* Hero Section */}
-      <header className="site-header" style={{ padding: 'calc(var(--space-8) * 3) calc(var(--space-8) * 1.6) calc(var(--space-8) * 2)', maxWidth: '760px' }}>
-        <div className="organic-tag organic-tag-accent" style={{ marginBottom: 'var(--space-3)' }}>
-          A COMMUNITY OF PEOPLE WHO HAVE BEEN THERE
-        </div>
-        <h1>What&apos;s a country really like? Ask the people who&apos;ve lived it.</h1>
-        <p style={{ fontSize: '17px', opacity: 0.85, maxWidth: '600px', margin: 0 }}>
-          Real opinions on work, food, family, manners, and more — shared by locals, travelers, and expats, and rated by everyone else. No brochures, no clichés.
-        </p>
+      <header className="site-header" style={{ padding: 'calc(var(--space-8) * 3) calc(var(--space-8) * 1.6) calc(var(--space-8) * 2)' }}>
+        <div className="hero-grid">
+          <div style={{ maxWidth: '600px' }}>
+            <div className="organic-tag organic-tag-accent" style={{ marginBottom: 'var(--space-3)' }}>
+              A COMMUNITY OF PEOPLE WHO HAVE BEEN THERE
+            </div>
+            <h1>What&apos;s a country really like? Ask the people who&apos;ve lived it.</h1>
+            <p style={{ fontSize: '17px', opacity: 0.85, maxWidth: '600px', margin: 0 }}>
+              Real opinions on work, food, family, manners, and more — shared by locals, travelers, and expats, and rated by everyone else. No brochures, no clichés.
+            </p>
 
-        {/* Search Bar */}
-        <div style={{ marginTop: 'var(--space-4)' }}>
-          <CountrySearch countries={countries} />
-        </div>
+            {/* Search Bar */}
+            <div style={{ marginTop: 'var(--space-4)' }}>
+              <CountrySearch countries={countries} />
+            </div>
 
-        {/* Popular Countries */}
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-2)', alignItems: 'center', marginTop: 'var(--space-3)' }}>
-          <span className="organic-card-meta" style={{ fontSize: '11px' }}>Popular:</span>
-          {countries
-            .filter(c => ['Japan', 'Germany', 'Brazil', 'India', 'France', 'United States'].includes(c.nameEn))
-            .map((country) => (
-              <Link key={country.id} href={`/countries/${country.id}`}>
-                <button className="organic-tag organic-tag-outline">
-                  {country.nameEn}
-                </button>
-              </Link>
-            ))}
+            {/* Popular Countries */}
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-2)', alignItems: 'center', marginTop: 'var(--space-3)' }}>
+              <span className="organic-card-meta" style={{ fontSize: '11px' }}>Popular:</span>
+              {popularCountries.map((country) => (
+                <Link key={country.id} href={`/countries/${country.id}`}>
+                  <button className="organic-tag organic-tag-outline">
+                    {country.nameEn}
+                  </button>
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {/* Decorative flag collage */}
+          <div className="hero-visual" aria-hidden="true">
+            <div className="hero-blob hero-blob-1" />
+            <div className="hero-blob hero-blob-2" />
+            {popularCountries.slice(0, heroFlagPositions.length).map((country, i) => {
+              const pos = heroFlagPositions[i]
+              return (
+                <div
+                  key={country.id}
+                  className="hero-flag"
+                  style={{ top: pos.top, right: pos.right, width: pos.size, height: pos.size }}
+                >
+                  <img src={`https://flagcdn.com/w80/${country.code.toLowerCase()}.png`} alt="" />
+                </div>
+              )
+            })}
+          </div>
         </div>
       </header>
 
@@ -89,10 +123,19 @@ export default async function HomePage() {
             <div style={{ fontFamily: 'var(--font-heading)', fontSize: '34px' }}>{stats.countries}</div>
             <div className="organic-card-meta">countries covered</div>
           </div>
-          <div>
-            <div style={{ fontFamily: 'var(--font-heading)', fontSize: '34px' }}>{stats.opinions}</div>
-            <div className="organic-card-meta">opinions shared</div>
-          </div>
+          {isEarlyStage ? (
+            <div>
+              <div style={{ fontFamily: 'var(--font-heading)', fontSize: '17px', lineHeight: 1.3 }}>Just getting started</div>
+              <Link href="/auth/signup" className="organic-card-meta" style={{ color: 'var(--color-accent)' }}>
+                Be one of the first voices →
+              </Link>
+            </div>
+          ) : (
+            <div>
+              <div style={{ fontFamily: 'var(--font-heading)', fontSize: '34px' }}>{stats.opinions}</div>
+              <div className="organic-card-meta">{stats.opinions === 1 ? 'opinion' : 'opinions'} shared</div>
+            </div>
+          )}
           <div>
             <div style={{ fontFamily: 'var(--font-heading)', fontSize: '34px' }}>{stats.categories}</div>
             <div className="organic-card-meta">culture categories</div>
@@ -101,7 +144,7 @@ export default async function HomePage() {
       </section>
 
       {/* Categories Section */}
-      <section style={{ padding: 'calc(var(--space-8) * 3) calc(var(--space-8) * 1.6)' }}>
+      <section id="categories" style={{ padding: 'calc(var(--space-8) * 3) calc(var(--space-8) * 1.6)' }}>
         <h2>Browse by category</h2>
         <p className="organic-card-meta" style={{ fontSize: '14px', marginBottom: 'var(--space-6)', maxWidth: '520px' }}>
           Every opinion lives inside one of these — so you can compare like with like.
@@ -110,7 +153,7 @@ export default async function HomePage() {
           {categories.map((category, i) => (
             <Link key={category.id} href={`/categories/${category.slug}`}>
               <div className="organic-card reveal" style={{ gap: 'var(--space-3)', animationDelay: `${i * 0.05}s` }}>
-                <div style={{ width: '44px', height: '44px', fontSize: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--color-accent-100)', borderRadius: '12px' }}>
+                <div style={{ width: '44px', height: '44px', fontSize: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: i % 2 === 0 ? 'var(--color-accent-100)' : 'var(--color-accent-2-100)', borderRadius: '12px' }}>
                   {category.icon}
                 </div>
                 <div className="organic-card-title">{category.nameEn}</div>
@@ -128,7 +171,10 @@ export default async function HomePage() {
           Countries with the most active conversations this month.
         </p>
         <div className="country-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'var(--space-4)' }}>
-          {countries.slice(0, 6).map((country, i) => (
+          {[...countries]
+            .sort((a, b) => b.totalPosts - a.totalPosts)
+            .slice(0, 6)
+            .map((country, i) => (
             <Link key={country.id} href={`/countries/${country.id}`}>
               <div className="organic-card organic-card-horizontal reveal" style={{ gap: 'var(--space-3)', animationDelay: `${i * 0.05}s` }}>
                 <div style={{ width: '48px', height: '48px', borderRadius: '50%', flexShrink: 0, overflow: 'hidden', border: '2px solid var(--color-divider)' }}>
@@ -141,7 +187,7 @@ export default async function HomePage() {
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div className="organic-card-title" style={{ fontSize: '16px' }}>{country.nameEn}</div>
-                  <div className="organic-card-meta">{country.totalPosts} opinions</div>
+                  <div className="organic-card-meta">{country.totalPosts} {country.totalPosts === 1 ? 'opinion' : 'opinions'}</div>
                 </div>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" style={{ flexShrink: 0, color: 'var(--color-accent)' }}>
                   <line x1="4" y1="12" x2="18" y2="12"></line>
@@ -161,15 +207,20 @@ export default async function HomePage() {
         </p>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'var(--space-4)' }}>
           {[
-            { quote: "I moved to Berlin for work and the biggest surprise wasn't the language — it was how seriously people take being five minutes early.", tag: 'Lived in Germany · 3 years' },
-            { quote: 'Everyone told me Brazilians were loud and always late. My experience was the opposite once I actually had local friends.', tag: 'Traveled to Brazil' },
-            { quote: "In Japan, silence in a conversation isn't awkward, it's normal. Took me months to stop trying to fill every gap.", tag: 'Lived in Japan · 2 years' },
+            { quote: "I moved to Berlin for work and the biggest surprise wasn't the language — it was how seriously people take being five minutes early.", tag: 'Lived in Germany · 3 years', code: 'de' },
+            { quote: 'Everyone told me Brazilians were loud and always late. My experience was the opposite once I actually had local friends.', tag: 'Traveled to Brazil', code: 'br' },
+            { quote: "In Japan, silence in a conversation isn't awkward, it's normal. Took me months to stop trying to fill every gap.", tag: 'Lived in Japan · 2 years', code: 'jp' },
           ].map((testimonial, i) => (
             <div key={i} className="organic-card reveal" style={{ gap: 'var(--space-3)', animationDelay: `${i * 0.1}s` }}>
               <p className="organic-card-body" style={{ fontSize: '15px', fontStyle: 'italic', opacity: 0.95, flex: 1 }}>
                 "{testimonial.quote}"
               </p>
-              <div className="organic-card-meta">{testimonial.tag}</div>
+              <div className="testimonial-head">
+                <div className="testimonial-avatar">
+                  <img src={`https://flagcdn.com/w80/${testimonial.code}.png`} alt="" />
+                </div>
+                <div className="organic-card-meta">{testimonial.tag}</div>
+              </div>
             </div>
           ))}
         </div>
@@ -233,7 +284,6 @@ export default async function HomePage() {
           <div>
             <div className="organic-card-kicker" style={{ marginBottom: 'var(--space-2)' }}>Company</div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
-              <Link href="/">About</Link>
               <Link href="/guidelines">Content guidelines</Link>
             </div>
           </div>
