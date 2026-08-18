@@ -74,7 +74,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" dir="ltr" className={`${inter.variable} ${figtree.variable}`} suppressHydrationWarning>
-      <body className="min-h-screen bg-background font-sans antialiased" suppressHydrationWarning>
+      <body className="min-h-screen font-sans antialiased" style={{ backgroundColor: '#f5ead8' }} suppressHydrationWarning>
         <div className="relative flex min-h-screen flex-col">
           {/* Old Header removed - using new organic design */}
           <main className="flex-1">{children}</main>
